@@ -3,6 +3,7 @@ package com.sinaukoding.librarymanagementsystem.controller.app;
 import com.sinaukoding.librarymanagementsystem.config.UserLoggedInConfig;
 import com.sinaukoding.librarymanagementsystem.model.request.AdminRequestRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.LoginRequestRecord;
+import com.sinaukoding.librarymanagementsystem.model.request.UserRequestRecord;
 import com.sinaukoding.librarymanagementsystem.model.response.BaseResponse;
 import com.sinaukoding.librarymanagementsystem.service.app.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,12 @@ public class AuthController {
     public BaseResponse<?> registerAdmin(@RequestBody AdminRequestRecord request) {
         authService.registerAdmin(request);
         return BaseResponse.ok("Successfully registered admin", null);
+    }
+
+    @PostMapping("register/user")
+    public BaseResponse<?> registerUser(@RequestBody UserRequestRecord request) {
+        authService.registerUser(request);
+        return BaseResponse.ok("Successfully registered user", null);
     }
 
     @GetMapping("logout")
