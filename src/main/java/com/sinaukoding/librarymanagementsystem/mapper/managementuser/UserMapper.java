@@ -21,7 +21,6 @@ public class UserMapper {
                 .username(request.username().toLowerCase())
                 .email(request.email().toLowerCase())
                 .status(request.status())
-                .role(request.role())
                 .build();
     }
 

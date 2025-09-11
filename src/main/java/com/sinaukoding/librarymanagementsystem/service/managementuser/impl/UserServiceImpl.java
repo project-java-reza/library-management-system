@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService{
             data.put("username", user.getUsername());
             data.put("email", user.getEmail());
             data.put("role", user.getStatus().getLabel());
-            data.put("status", user.getRole().getLabel());
+            data.put("status", user.getRole().getRole().getLabel());
             return data;
         }).toList();
 
@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService{
         data.put("username", user.getUsername());
         data.put("email", user.getEmail());
         data.put("status", user.getStatus().getLabel());
-        data.put("role", user.getRole().getLabel());
+        data.put("role", user.getRole().getRole().getLabel());
         return data;
     }
 
