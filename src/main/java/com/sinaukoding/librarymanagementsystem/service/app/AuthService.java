@@ -9,7 +9,9 @@ import com.sinaukoding.librarymanagementsystem.model.request.UserRequestRecord;
 
 public interface AuthService {
 
-    SimpleMap login(LoginRequestRecord request);
+    SimpleMap loginUser(LoginRequestRecord request);
+
+    SimpleMap loginAdmin(LoginRequestRecord request);
 
     void registerAdmin(AdminRequestRecord request);
 

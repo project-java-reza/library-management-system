@@ -31,7 +31,7 @@ class UserServiceTest {
                 "rizqirezaardiansyah@gmail.com",
                 "reza123",
                 Status.AKTIF,
-                ERole.PUSTAKAWAN
+                ERole.ADMIN
         );
 
         UserRequestRecord requestUser2 = new UserRequestRecord(null,
@@ -40,7 +40,7 @@ class UserServiceTest {
                 "rizqirezaardiansyahJava@gmail.com",
                 "rizqi123",
                 Status.AKTIF,
-                ERole.PUSTAKAWAN
+                ERole.ANGGOTA
         );
         User addUser1 = userService.add(requestUser1);
         User addUser2 = userService.add(requestUser2);
@@ -61,7 +61,7 @@ class UserServiceTest {
                 "rizqirezaardiansyah@gmail.com",
                 "reza123",
                 Status.AKTIF,
-                ERole.PUSTAKAWAN
+                ERole.ANGGOTA
         );
 
         userService.edit(existingUserRequest);

@@ -1,7 +1,6 @@
 package com.sinaukoding.librarymanagementsystem.repository.managementuser;
 
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.Admin;
-import com.sinaukoding.librarymanagementsystem.entity.managementuser.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -12,5 +11,5 @@ public interface AdminRepository extends JpaRepository<Admin, String>, JpaSpecif
     Boolean existsByEmailAndIdNot(String email, String id);
     Boolean existsByUsername(String username);
     Boolean existsByUsernameAndIdNot(String username, String id);
-    Optional<User> findByUsername(String username);
+    Optional<Admin> findByUsername(String username);
 }

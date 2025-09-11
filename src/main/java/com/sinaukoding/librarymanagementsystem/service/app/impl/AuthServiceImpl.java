@@ -40,7 +40,7 @@ public class AuthServiceImpl implements AuthService {
     private final RoleService roleService;
 
     @Override
-    public SimpleMap login(LoginRequestRecord request) {
+    public SimpleMap loginUser(LoginRequestRecord request) {
         validatorService.validator(request);
         var user = userRepository.findByUsername(request.username().toLowerCase()).orElseThrow(() -> new RuntimeException("Username atau password salah"));
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
@@ -50,6 +50,22 @@ public class AuthServiceImpl implements AuthService {
         user.setToken(token);
         user.setExpiredTokenAt(LocalDateTime.now().plusHours(1));
         userRepository.save(user);
+        SimpleMap result = new SimpleMap();
+        result.put("token", token);
+        return result;
+    }
+
+    @Override
+    public SimpleMap loginAdmin(LoginRequestRecord request) {
+        validatorService.validator(request);
+        var admin = adminRepository.findByUsername(request.username().toLowerCase()).orElseThrow(() -> new RuntimeException("Username atau password salah"));
+        if (!passwordEncoder.matches(request.password(), admin.getPassword())) {
+            throw new RuntimeException("Username atau password salah");
+        }
+        String token = jwtUtil.generateToken(admin.getUsername());
+        admin.setToken(token);
+        admin.setExpiredTokenAt(LocalDateTime.now().plusHours(1));
+        adminRepository.save(admin);
         SimpleMap result = new SimpleMap();
         result.put("token", token);
         return result;
@@ -127,7 +143,4 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("Email tidak boleh kosong");
         }
     }
-
-
-
 }

@@ -17,9 +17,14 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("login")
-    public BaseResponse<?> login(@RequestBody LoginRequestRecord request) {
-        return BaseResponse.ok("Successfully Login", authService.login(request));
+    @PostMapping("login/user")
+    public BaseResponse<?> loginUser(@RequestBody LoginRequestRecord request) {
+        return BaseResponse.ok("Successfully Login", authService.loginUser(request));
+    }
+
+    @PostMapping("login/admin")
+    public BaseResponse<?> loginAdmin(@RequestBody LoginRequestRecord request) {
+        return BaseResponse.ok("Successfully Login", authService.loginAdmin(request));
     }
 
     @PostMapping("register/admin")

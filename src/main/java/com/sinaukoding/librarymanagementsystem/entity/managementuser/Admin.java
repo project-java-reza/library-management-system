@@ -49,7 +49,7 @@ public class Admin extends BaseEntity {
 
     // Banyak admin bisa memiliki satu role
     // relasi ke tabel m_role
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false)
     private Role role;
 

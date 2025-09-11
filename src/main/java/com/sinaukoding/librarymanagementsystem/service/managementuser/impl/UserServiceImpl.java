@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void deleteById(String id) {
-        userRepository.deleteById(id);
+        userRepository.findById(id);
     }
 
     private void validasiMandatory(UserRequestRecord request) {
