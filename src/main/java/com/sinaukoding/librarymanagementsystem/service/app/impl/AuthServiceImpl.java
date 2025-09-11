@@ -3,10 +3,12 @@ package com.sinaukoding.librarymanagementsystem.service.app.impl;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.Role;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.User;
 import com.sinaukoding.librarymanagementsystem.mapper.managementuser.AdminMapper;
+import com.sinaukoding.librarymanagementsystem.mapper.managementuser.UserMapper;
 import com.sinaukoding.librarymanagementsystem.model.app.SimpleMap;
 import com.sinaukoding.librarymanagementsystem.model.enums.ERole;
 import com.sinaukoding.librarymanagementsystem.model.request.AdminRequestRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.LoginRequestRecord;
+import com.sinaukoding.librarymanagementsystem.model.request.UserRequestRecord;
 import com.sinaukoding.librarymanagementsystem.repository.managementuser.AdminRepository;
 import com.sinaukoding.librarymanagementsystem.repository.managementuser.UserRepository;
 import com.sinaukoding.librarymanagementsystem.service.app.AuthService;
@@ -30,6 +32,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final AdminRepository adminRepository;
     private final AdminMapper adminMapper;
+    private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final ValidatorService validatorService;
@@ -59,18 +62,42 @@ public class AuthServiceImpl implements AuthService {
             validasiMandatory(request);
 
             // validasi data existing
-            if (userRepository.existsByUsername(request.username().toLowerCase())) {
+            if (adminRepository.existsByUsername(request.username().toLowerCase())) {
                 throw new RuntimeException("Username [" + request.username() + "] sudah digunakan");
             }
 
             Role adminRole = roleService.getOrSave(ERole.ADMIN);
 
             var admin = adminMapper.requestToEntity(request);
+            admin.setUsername(request.username());
             admin.setPassword(passwordEncoder.encode(request.password()));
             admin.setRole(adminRole);
             adminRepository.save(admin);
         } catch (DataIntegrityViolationException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Admin already exists");
+        }
+    }
+
+    @Override
+    public void registerUser(UserRequestRecord request) {
+        try {
+            // validasi mandatory
+            validasiMandatory(request);
+
+            // validasi data existing
+            if (userRepository.existsByUsername(request.username().toLowerCase())) {
+                throw new RuntimeException("Username [" + request.username() + "] sudah digunakan");
+            }
+
+            Role userRole = roleService.getOrSave(ERole.ANGGOTA);
+
+            var user = userMapper.requestToEntity(request);
+            user.setUsername(request.username());
+            user.setPassword(passwordEncoder.encode(request.password()));
+            user.setRole(userRole);
+            userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists");
         }
     }
 
@@ -82,6 +109,16 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private void validasiMandatory(AdminRequestRecord request) {
+        if (request.username() == null || request.username().isEmpty()) {
+            throw new RuntimeException("Username tidak boleh kosong");
+        }
+
+        if (request.password() == null || request.password().isEmpty()) {
+            throw new RuntimeException("Email tidak boleh kosong");
+        }
+    }
+
+    private void validasiMandatory(UserRequestRecord request) {
         if (request.username() == null || request.username().isEmpty()) {
             throw new RuntimeException("Username tidak boleh kosong");
         }
