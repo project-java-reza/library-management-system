@@ -5,7 +5,6 @@ import lombok.Getter;
 @Getter
 public enum ERole {
 
-    PUSTAKAWAN("Pustakawan"),
     ANGGOTA("Anggota"),
     ADMIN("Admin");
 
