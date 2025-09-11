@@ -1,7 +1,6 @@
 package com.sinaukoding.librarymanagementsystem.service.app;
 
-
-import com.sinaukoding.librarymanagementsystem.entity.managementuser.User;
+import com.sinaukoding.librarymanagementsystem.entity.managementuser.Admin;
 import com.sinaukoding.librarymanagementsystem.model.app.SimpleMap;
 import com.sinaukoding.librarymanagementsystem.model.request.AdminRequestRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.LoginRequestRecord;
@@ -17,6 +16,6 @@ public interface AuthService {
 
     void registerUser(UserRequestRecord request);
 
-    void logout(User userLoggedIn);
+    void logout(Admin userLoggedIn);
 
 }

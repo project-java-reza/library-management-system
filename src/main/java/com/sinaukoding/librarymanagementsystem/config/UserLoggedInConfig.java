@@ -1,6 +1,6 @@
 package com.sinaukoding.librarymanagementsystem.config;
 
-import com.sinaukoding.librarymanagementsystem.entity.managementuser.User;
+import com.sinaukoding.librarymanagementsystem.entity.managementuser.Admin;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,25 +12,25 @@ import java.util.List;
 @Getter
 public class UserLoggedInConfig implements UserDetails {
 
-    private final User user;
+    private final Admin admin;
 
-    public UserLoggedInConfig(User user) {
-        this.user = user;
+    public UserLoggedInConfig(Admin admin) {
+        this.admin = admin;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().getRole().name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + admin.getRole().getRole().name()));
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return admin.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return admin.getUsername();
     }
 
 }

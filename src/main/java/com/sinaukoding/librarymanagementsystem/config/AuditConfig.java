@@ -29,7 +29,7 @@ public class AuditConfig {
             Object principal = authentication.getPrincipal();
 
             if (principal instanceof UserLoggedInConfig userDetails) {
-                return Optional.of(userDetails.getUser().getId());
+                return Optional.of(userDetails.getAdmin().getId());
             }
 
             return Optional.of(authentication.getName());

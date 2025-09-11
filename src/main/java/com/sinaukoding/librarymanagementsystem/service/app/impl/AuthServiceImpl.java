@@ -1,5 +1,6 @@
 package com.sinaukoding.librarymanagementsystem.service.app.impl;
 
+import com.sinaukoding.librarymanagementsystem.entity.managementuser.Admin;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.Role;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.User;
 import com.sinaukoding.librarymanagementsystem.mapper.managementuser.AdminMapper;
@@ -118,10 +119,10 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void logout(User userLoggedIn) {
+    public void logout(Admin userLoggedIn) {
         userLoggedIn.setToken(null);
         userLoggedIn.setExpiredTokenAt(null);
-        userRepository.save(userLoggedIn);
+        adminRepository.save(userLoggedIn);
     }
 
     private void validasiMandatory(AdminRequestRecord request) {
