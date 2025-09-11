@@ -1,7 +1,7 @@
 package com.sinaukoding.librarymanagementsystem.model.request;
 
 
-import com.sinaukoding.librarymanagementsystem.model.enums.Role;
+import com.sinaukoding.librarymanagementsystem.model.enums.ERole;
 import com.sinaukoding.librarymanagementsystem.model.enums.Status;
 
 public record UserRequestRecord(String id,
@@ -10,5 +10,5 @@ public record UserRequestRecord(String id,
                                 String email,
                                 String password,
                                 Status status,
-                                Role role) {
+                                ERole role) {
 }

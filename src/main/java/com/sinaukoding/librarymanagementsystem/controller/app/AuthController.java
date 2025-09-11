@@ -1,6 +1,7 @@
 package com.sinaukoding.librarymanagementsystem.controller.app;
 
 import com.sinaukoding.librarymanagementsystem.config.UserLoggedInConfig;
+import com.sinaukoding.librarymanagementsystem.model.request.AdminRequestRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.LoginRequestRecord;
 import com.sinaukoding.librarymanagementsystem.model.response.BaseResponse;
 import com.sinaukoding.librarymanagementsystem.service.app.AuthService;
@@ -17,7 +18,13 @@ public class AuthController {
 
     @PostMapping("login")
     public BaseResponse<?> login(@RequestBody LoginRequestRecord request) {
-        return BaseResponse.ok(null, authService.login(request));
+        return BaseResponse.ok("Successfully Login", authService.login(request));
+    }
+
+    @PostMapping("register/admin")
+    public BaseResponse<?> registerAdmin(@RequestBody AdminRequestRecord request) {
+        authService.registerAdmin(request);
+        return BaseResponse.ok("Successfully registered admin", null);
     }
 
     @GetMapping("logout")

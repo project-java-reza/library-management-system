@@ -1,7 +1,7 @@
 package com.sinaukoding.librarymanagementsystem.entity.managementuser;
 
 import com.sinaukoding.librarymanagementsystem.entity.app.BaseEntity;
-import com.sinaukoding.librarymanagementsystem.model.enums.Role;
+import com.sinaukoding.librarymanagementsystem.model.enums.ERole;
 import com.sinaukoding.librarymanagementsystem.model.enums.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -50,7 +50,7 @@ public class User extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
+    private ERole role;
 
     private String token;
     private LocalDateTime expiredTokenAt;

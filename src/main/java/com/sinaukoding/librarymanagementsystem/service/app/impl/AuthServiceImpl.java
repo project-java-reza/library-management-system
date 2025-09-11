@@ -1,15 +1,25 @@
 package com.sinaukoding.librarymanagementsystem.service.app.impl;
 
+import com.sinaukoding.librarymanagementsystem.entity.managementuser.Role;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.User;
+import com.sinaukoding.librarymanagementsystem.mapper.managementuser.AdminMapper;
 import com.sinaukoding.librarymanagementsystem.model.app.SimpleMap;
+import com.sinaukoding.librarymanagementsystem.model.enums.ERole;
+import com.sinaukoding.librarymanagementsystem.model.request.AdminRequestRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.LoginRequestRecord;
+import com.sinaukoding.librarymanagementsystem.repository.managementuser.AdminRepository;
 import com.sinaukoding.librarymanagementsystem.repository.managementuser.UserRepository;
 import com.sinaukoding.librarymanagementsystem.service.app.AuthService;
 import com.sinaukoding.librarymanagementsystem.service.app.ValidatorService;
+import com.sinaukoding.librarymanagementsystem.service.managementuser.RoleService;
+import com.sinaukoding.librarymanagementsystem.service.managementuser.UserService;
 import com.sinaukoding.librarymanagementsystem.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 
@@ -18,9 +28,13 @@ import java.time.LocalDateTime;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
+    private final AdminRepository adminRepository;
+    private final AdminMapper adminMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final ValidatorService validatorService;
+    private final UserService userService;
+    private final RoleService roleService;
 
     @Override
     public SimpleMap login(LoginRequestRecord request) {
@@ -39,10 +53,44 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public void registerAdmin(AdminRequestRecord request) {
+        try {
+            // validasi mandatory
+            validasiMandatory(request);
+
+            // validasi data existing
+            if (userRepository.existsByUsername(request.username().toLowerCase())) {
+                throw new RuntimeException("Username [" + request.username() + "] sudah digunakan");
+            }
+
+            Role adminRole = roleService.getOrSave(ERole.ADMIN);
+
+            var admin = adminMapper.requestToEntity(request);
+            admin.setPassword(passwordEncoder.encode(request.password()));
+            admin.setRole(adminRole);
+            adminRepository.save(admin);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Admin already exists");
+        }
+    }
+
+    @Override
     public void logout(User userLoggedIn) {
         userLoggedIn.setToken(null);
         userLoggedIn.setExpiredTokenAt(null);
         userRepository.save(userLoggedIn);
     }
+
+    private void validasiMandatory(AdminRequestRecord request) {
+        if (request.username() == null || request.username().isEmpty()) {
+            throw new RuntimeException("Username tidak boleh kosong");
+        }
+
+        if (request.password() == null || request.password().isEmpty()) {
+            throw new RuntimeException("Email tidak boleh kosong");
+        }
+    }
+
+
 
 }

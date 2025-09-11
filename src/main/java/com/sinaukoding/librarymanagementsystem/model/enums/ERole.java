@@ -3,7 +3,7 @@ package com.sinaukoding.librarymanagementsystem.model.enums;
 import lombok.Getter;
 
 @Getter
-public enum Role {
+public enum ERole {
 
     PUSTAKAWAN("Pustakawan"),
     ANGGOTA("Anggota"),
@@ -11,7 +11,7 @@ public enum Role {
 
     private final String label;
 
-    Role(String label) {
+    ERole(String label) {
         this.label = label;
     }
 

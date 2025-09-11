@@ -1,11 +1,10 @@
 package com.sinaukoding.librarymanagementsystem.service.managementuser;
 
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.User;
-import com.sinaukoding.librarymanagementsystem.model.enums.Role;
+import com.sinaukoding.librarymanagementsystem.model.enums.ERole;
 import com.sinaukoding.librarymanagementsystem.model.enums.Status;
 import com.sinaukoding.librarymanagementsystem.model.request.UserRequestRecord;
 import com.sinaukoding.librarymanagementsystem.repository.managementuser.UserRepository;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,7 +31,7 @@ class UserServiceTest {
                 "rizqirezaardiansyah@gmail.com",
                 "reza123",
                 Status.AKTIF,
-                Role.PUSTAKAWAN
+                ERole.PUSTAKAWAN
         );
 
         UserRequestRecord requestUser2 = new UserRequestRecord(null,
@@ -41,7 +40,7 @@ class UserServiceTest {
                 "rizqirezaardiansyahJava@gmail.com",
                 "rizqi123",
                 Status.AKTIF,
-                Role.PUSTAKAWAN
+                ERole.PUSTAKAWAN
         );
         User addUser1 = userService.add(requestUser1);
         User addUser2 = userService.add(requestUser2);
@@ -62,7 +61,7 @@ class UserServiceTest {
                 "rizqirezaardiansyah@gmail.com",
                 "reza123",
                 Status.AKTIF,
-                Role.PUSTAKAWAN
+                ERole.PUSTAKAWAN
         );
 
         userService.edit(existingUserRequest);
