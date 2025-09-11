@@ -1,7 +1,6 @@
 package com.sinaukoding.librarymanagementsystem.entity.managementuser;
 
 import com.sinaukoding.librarymanagementsystem.entity.app.BaseEntity;
-import com.sinaukoding.librarymanagementsystem.model.enums.ERole;
 import com.sinaukoding.librarymanagementsystem.model.enums.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -48,9 +47,11 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private Status status;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ERole role;
+    // Banyak admin bisa memiliki satu role
+    // relasi ke tabel m_role
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false)
+    private Role role;
 
     private String token;
     private LocalDateTime expiredTokenAt;
