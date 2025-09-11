@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService{
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public void add(UserRequestRecord request) {
+    public User add(UserRequestRecord request) {
         // validasi mandatory
         validasiMandatory(request);
 
@@ -42,10 +42,11 @@ public class UserServiceImpl implements UserService{
         var user = userMapper.requestToEntity(request);
         user.setPassword(passwordEncoder.encode(request.password()));
         userRepository.save(user);
+        return user;
     }
 
     @Override
-    public void edit(UserRequestRecord request) {
+    public User edit(UserRequestRecord request) {
         // validasi mandatory
         validasiMandatory(request);
 
@@ -63,6 +64,7 @@ public class UserServiceImpl implements UserService{
         user.setId(userExisting.getId());
         user.setPassword(passwordEncoder.encode(request.password()));
         userRepository.save(user);
+        return user;
     }
 
     @Override
@@ -101,6 +103,11 @@ public class UserServiceImpl implements UserService{
         data.put("status", user.getStatus().getLabel());
         data.put("role", user.getRole().getLabel());
         return data;
+    }
+
+    @Override
+    public void deleteById(String id) {
+        userRepository.deleteById(id);
     }
 
     private void validasiMandatory(UserRequestRecord request) {
