@@ -45,4 +45,12 @@ public class UserController {
         return BaseResponse.ok(null, userService.findById(id));
     }
 
+    @DeleteMapping("delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public BaseResponse<?> deleteById(@PathVariable String id) {
+        userService.deleteById(id);
+        return BaseResponse.ok("Delete berhasil", null);
+
+    }
+
 }
