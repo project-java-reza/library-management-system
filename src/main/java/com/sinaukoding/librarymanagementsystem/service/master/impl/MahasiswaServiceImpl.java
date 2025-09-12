@@ -16,6 +16,8 @@ import com.sinaukoding.librarymanagementsystem.util.JwtUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
@@ -48,10 +50,6 @@ public class MahasiswaServiceImpl implements MahasiswaService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("User dengan username " + username + " tidak ditemukan."));
 
-        if (user.getMahasiswa() != null) {
-            throw new IllegalStateException("User ini sudah memiliki profil Mahasiswa.");
-        }
-
         validasiMandatory(request);
 
         Mahasiswa mahasiswa = mahasiswaMapper.requestToEntity(request);
@@ -61,38 +59,42 @@ public class MahasiswaServiceImpl implements MahasiswaService {
         mahasiswa.setAlamat(request.alamat());
         mahasiswa.setPhoneNumber(request.phoneNumber());
 
-        // 7) Set relasi dua arah (penting!)
         mahasiswa.setUser(user);     // owning side
         user.setMahasiswa(mahasiswa);
 
-        // 8) Simpan. Karena owning side adalah Mahasiswa, pastikan save Mahasiswa.
-        //    Jika TIDAK ada cascade dari User -> Mahasiswa, simpan keduanya.
         Mahasiswa saved = mahasiswaRepository.save(mahasiswa);
         userRepository.save(user);
 
         return saved;
     }
-//
-//    @Override
-//    public Mahasiswa editProfileMahasiswaUser(MahasiswaRequestRecord request) {
-//        return null;
-//    }
-//
-//    @Override
-//    public Page<SimpleMap> findAllProfileMahasiswaUser(MahasiswaRequestRecord filterRequest, Pageable pageable) {
-//        return null;
-//    }
-//
-        @Override
-        public SimpleMap findByIdMahasiswaUser(String id) {
-            return null;
-        }
 
-//    @Override
-//    public void deleteByIdMahasiswaUser(String id) {
-//
-//    }
-//
+    @Override
+    public Mahasiswa editProfileMahasiswaUser(MahasiswaRequestRecord request) {
+        return null;
+    }
+
+    @Override
+    public Page<SimpleMap> findAllProfileMahasiswaUser(MahasiswaRequestRecord filterRequest, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public SimpleMap findByIdMahasiswaUser(String id) {
+        var user = mahasiswaRepository.findById(id).orElseThrow(() ->  new RuntimeException("Data mahasiswa tidak ditemukan"));
+        SimpleMap data = new SimpleMap();
+        data.put("id", user.getId());
+        data.put("nim", user.getNim());
+        data.put("jurusan", user.getJurusan());
+        data.put("alamat", user.getAlamat());
+        data.put("phoneNumber", user.getPhoneNumber());
+    return data;
+}
+
+    @Override
+    public void deleteByIdMahasiswaUser(String id) {
+
+    }
+
     private void validasiMandatory(MahasiswaRequestRecord request) {
         if (request.nim() == null || request.nim().isEmpty()) {
             throw new RuntimeException("NIM tidak boleh kosong");

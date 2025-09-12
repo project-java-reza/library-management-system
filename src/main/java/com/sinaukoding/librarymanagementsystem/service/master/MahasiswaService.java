@@ -9,11 +9,11 @@ import org.springframework.data.domain.Pageable;
 public interface MahasiswaService  {
     Mahasiswa addProfileMahasiswaUser(MahasiswaRequestRecord request, String token);
 
-//    Mahasiswa editProfileMahasiswaUser(MahasiswaRequestRecord request);
-//
-//    Page<SimpleMap> findAllProfileMahasiswaUser(MahasiswaRequestRecord filterRequest, Pageable pageable);
-//
-      SimpleMap findByIdMahasiswaUser(String id);
-//
-//    void deleteByIdMahasiswaUser(String id);
+    Mahasiswa editProfileMahasiswaUser(MahasiswaRequestRecord request);
+
+    Page<SimpleMap> findAllProfileMahasiswaUser(MahasiswaRequestRecord filterRequest, Pageable pageable);
+
+     SimpleMap findByIdMahasiswaUser(String id);
+
+    void deleteByIdMahasiswaUser(String id);
 }
