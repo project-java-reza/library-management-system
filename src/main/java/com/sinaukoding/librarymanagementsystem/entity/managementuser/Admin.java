@@ -3,6 +3,8 @@ package com.sinaukoding.librarymanagementsystem.entity.managementuser;
 import com.sinaukoding.librarymanagementsystem.entity.app.BaseEntity;
 import com.sinaukoding.librarymanagementsystem.model.enums.Status;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,10 +30,15 @@ public class Admin extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "admin_id")
     private String id;
 
     @Column(nullable = false, unique = true)
     private String nama;
+
+    @NotBlank(message = "Password is required")
+    @Size(min = 8, message = "Password must be at least 8 characters long")
+    private String password;
 
     @Column(nullable = false, unique = true)
     private String username;

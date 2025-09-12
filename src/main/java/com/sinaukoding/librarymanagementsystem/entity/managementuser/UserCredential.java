@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
 
@@ -28,6 +27,14 @@ public class UserCredential {
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
+
+    @OneToOne
+    @JoinColumn(name = "id", referencedColumnName = "id")
+    private User user;
+
+    @OneToOne
+    @JoinColumn(name = "admin_id", referencedColumnName = "admin_id")
+    private Admin admin;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "m_user_role",
