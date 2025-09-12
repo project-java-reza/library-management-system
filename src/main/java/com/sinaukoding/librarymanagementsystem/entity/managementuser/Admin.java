@@ -52,6 +52,10 @@ public class Admin extends BaseEntity {
     @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false)
     private Role role;
 
+    @OneToOne
+    @JoinColumn(name = "user_credential_id")
+    private UserCredential userCredential;
+
     private String token;
     private LocalDateTime expiredTokenAt;
 
