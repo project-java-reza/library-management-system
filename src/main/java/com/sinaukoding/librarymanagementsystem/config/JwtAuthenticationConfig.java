@@ -51,5 +51,4 @@ public class JwtAuthenticationConfig extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
-
 }

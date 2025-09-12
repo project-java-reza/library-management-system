@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
         @Index(name = "idx_admin_username", columnList = "username"),
         @Index(name = "idx_admin_email", columnList = "email"),
         @Index(name = "idx_admin_status", columnList = "status"),
-        @Index(name = "idx_admin_role", columnList = "role")
 })
 public class Admin extends BaseEntity {
 

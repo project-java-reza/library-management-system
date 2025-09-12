@@ -3,6 +3,7 @@ package com.sinaukoding.librarymanagementsystem.service.app.impl;
 import com.sinaukoding.librarymanagementsystem.config.UserLoggedInConfig;
 import com.sinaukoding.librarymanagementsystem.model.app.Checks;
 import com.sinaukoding.librarymanagementsystem.repository.managementuser.AdminRepository;
+import com.sinaukoding.librarymanagementsystem.repository.managementuser.UserRepository;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,13 +16,26 @@ import org.springframework.stereotype.Service;
 public class UserLoggedInServiceImpl implements UserDetailsService {
 
     private final AdminRepository adminRepository;
+    private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var admin = adminRepository.findByUsername(username)
+
+        var admin = adminRepository.findByUsername(username).orElse(null);
+
+        if (admin != null) {
+            Checks.isTrue(StringUtils.isNotBlank(admin.getToken()), "Session habis, silahkan login kembali");
+            return new UserLoggedInConfig(admin);
+        }
+
+        var user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User : " + username + " tidak ditemukan"));
-        Checks.isTrue(StringUtils.isNotBlank(admin.getToken()), "Session habis, silahkan login kembali");
-        return new UserLoggedInConfig(admin);
+
+        Checks.isTrue(StringUtils.isNotBlank(user.getToken()), "Session habis, silahkan login kembali");
+
+        return new UserLoggedInConfig(user);
     }
+
+
 
 }
