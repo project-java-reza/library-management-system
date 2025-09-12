@@ -41,8 +41,15 @@ public class AuthController {
 
     @GetMapping("logout")
     public BaseResponse<?> logout(@AuthenticationPrincipal UserLoggedInConfig userLoggedInConfig) {
-        var userLoggedIn = userLoggedInConfig.getAdmin();
-        authService.logout(userLoggedIn);
+        if (userLoggedInConfig.getAdmin() != null) {
+            var adminLoggedIn = userLoggedInConfig.getAdmin();
+            authService.logout(adminLoggedIn);
+        }
+
+        if (userLoggedInConfig.getUser() != null) {
+            var userLoggedIn = userLoggedInConfig.getUser();
+        }
+
         return BaseResponse.ok("Berhasil logout", null);
     }
 

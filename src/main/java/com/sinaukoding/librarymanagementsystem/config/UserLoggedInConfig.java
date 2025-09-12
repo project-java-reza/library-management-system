@@ -3,6 +3,7 @@ package com.sinaukoding.librarymanagementsystem.config;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.Admin;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.User;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Getter
+@Slf4j
 public class UserLoggedInConfig implements UserDetails {
 
     private final Admin admin;
@@ -43,6 +45,7 @@ public class UserLoggedInConfig implements UserDetails {
         if (admin != null) {
             return admin.getPassword();
         } else {
+            assert user != null;
             return user.getPassword();
         }
     }
@@ -51,9 +54,25 @@ public class UserLoggedInConfig implements UserDetails {
     public String getUsername() {
         if (admin != null) {
             return admin.getUsername();
-        } else {
+        } else if (user != null){
             return user.getUsername();
         }
+        return null;
     }
+
+    public String getId() {
+        if (admin != null) {
+            log.info("Admin ID: " + admin.getId());
+            return admin.getId();
+        } else if (user != null) {
+            log.info("User ID: " + user.getId());
+            return user.getId();
+        }
+        log.error("Tidak ada Admin atau User yang ditemukan.");
+        return null;
+    }
+
+
+
 
 }

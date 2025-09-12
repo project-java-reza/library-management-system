@@ -1,4 +1,4 @@
-package com.sinaukoding.ecommerce.config;
+package com.sinaukoding.librarymanagementsystem.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;

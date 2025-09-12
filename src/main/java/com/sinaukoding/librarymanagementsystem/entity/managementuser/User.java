@@ -1,12 +1,12 @@
 package com.sinaukoding.librarymanagementsystem.entity.managementuser;
 
 import com.sinaukoding.librarymanagementsystem.entity.app.BaseEntity;
+import com.sinaukoding.librarymanagementsystem.entity.master.Mahasiswa;
 import com.sinaukoding.librarymanagementsystem.model.enums.Status;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "m_user", indexes = {
         @Index(name = "idx_user_created_date", columnList = "createdDate"),
@@ -36,6 +38,9 @@ public class User extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String username;
 
+    @Column(nullable = false)
+    private String password;
+
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -49,9 +54,8 @@ public class User extends BaseEntity {
     @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false)
     private Role role;
 
-    @OneToOne
-    @JoinColumn(name = "user_credential_id")
-    private UserCredential userCredential;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Mahasiswa mahasiswa;
 
     private String token;
     private LocalDateTime expiredTokenAt;

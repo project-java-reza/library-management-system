@@ -1,12 +1,12 @@
 package com.sinaukoding.librarymanagementsystem.entity.managementuser;
 
 import com.sinaukoding.librarymanagementsystem.entity.app.BaseEntity;
+import com.sinaukoding.librarymanagementsystem.entity.master.Mahasiswa;
 import com.sinaukoding.librarymanagementsystem.model.enums.Status;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
@@ -30,11 +30,16 @@ public class Admin extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String nama;
 
     @Column(nullable = false, unique = true)
     private String username;
+
+    @NotBlank(message = "Password wajib diisi")
+    @Size(min = 8, message = "Password minimal 8 karakter")
+    @Column(nullable = false)
+    private String password;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -48,10 +53,6 @@ public class Admin extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false)
     private Role role;
-
-    @OneToOne
-    @JoinColumn(name = "user_credential_id")
-    private UserCredential userCredential;
 
     private String token;
     private LocalDateTime expiredTokenAt;

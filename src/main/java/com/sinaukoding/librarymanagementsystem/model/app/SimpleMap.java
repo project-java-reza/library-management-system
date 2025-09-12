@@ -42,5 +42,4 @@ public class SimpleMap extends HashMap<String, Object> {
         map.putAll(origin);
         return map;
     }
-
 }

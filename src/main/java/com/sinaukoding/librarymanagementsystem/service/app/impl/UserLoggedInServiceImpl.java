@@ -18,22 +18,33 @@ public class UserLoggedInServiceImpl implements UserDetailsService {
     private final AdminRepository adminRepository;
     private final UserRepository userRepository;
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        var admin = adminRepository.findByUsername(username).orElse(null);
-
-        if (admin != null) {
-            Checks.isTrue(StringUtils.isNotBlank(admin.getToken()), "Session habis, silahkan login kembali");
-            return new UserLoggedInConfig(admin);
-        }
-
+    public UserDetails loadUserByUsernameForUser(String username) throws UsernameNotFoundException {
         var user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User : " + username + " tidak ditemukan"));
+                .orElseThrow(() -> new UsernameNotFoundException("User dengan username: " + username + " tidak ditemukan"));
 
         Checks.isTrue(StringUtils.isNotBlank(user.getToken()), "Session habis, silahkan login kembali");
 
         return new UserLoggedInConfig(user);
+    }
+
+    public UserDetails loadAdminByUsername(String username) throws UsernameNotFoundException {
+        var admin = adminRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Admin dengan username: " + username + " tidak ditemukan"));
+
+        Checks.isTrue(StringUtils.isNotBlank(admin.getToken()), "Session habis, silahkan login kembali");
+
+        return new UserLoggedInConfig(admin);
+    }
+
+
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        try {
+            return loadUserByUsernameForUser(username);
+        } catch (UsernameNotFoundException e) {
+            return loadAdminByUsername(username);
+        }
     }
 
 

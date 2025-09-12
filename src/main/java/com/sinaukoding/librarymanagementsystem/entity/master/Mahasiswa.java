@@ -4,10 +4,7 @@ import com.sinaukoding.librarymanagementsystem.entity.app.BaseEntity;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @EqualsAndHashCode(callSuper = true)
@@ -15,6 +12,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "m_mahasiswa", indexes = {
         @Index(name = "idx_mahasiswa_created_date", columnList = "createdDate"),
@@ -46,7 +45,8 @@ public class Mahasiswa extends BaseEntity {
     @Column(name = "phone_number", nullable = false, unique = true)
     private String phoneNumber;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "user_id")
     private User user;
+
 }

@@ -19,8 +19,9 @@ public class MahasiswaController {
 
     @PostMapping("save")
     @PreAuthorize("hasRole('ANGGOTA')")
-    public BaseResponse<?> save(@RequestBody MahasiswaRequestRecord request) {
-           mahasiswaService.addProfileMahasiswaUser(request);
+    public BaseResponse<?> save(@RequestBody MahasiswaRequestRecord request, HttpServletRequest httpServletRequest) throws Exception {
+           String jwtToken = jwtAuthenticationConfig.parseJwt(httpServletRequest);
+           mahasiswaService.addProfileMahasiswaUser(request, jwtToken);
            return BaseResponse.ok("Data berhasil disimpan", null);
     }
 
