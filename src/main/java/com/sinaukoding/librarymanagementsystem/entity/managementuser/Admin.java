@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
         @Index(name = "idx_admin_username", columnList = "username"),
         @Index(name = "idx_admin_email", columnList = "email"),
         @Index(name = "idx_admin_status", columnList = "status"),
-        @Index(name = "idx_admin_role", columnList = "role")
 })
 public class Admin extends BaseEntity {
 
@@ -52,6 +51,10 @@ public class Admin extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false)
     private Role role;
+
+    @OneToOne
+    @JoinColumn(name = "user_credential_id")
+    private UserCredential userCredential;
 
     private String token;
     private LocalDateTime expiredTokenAt;
