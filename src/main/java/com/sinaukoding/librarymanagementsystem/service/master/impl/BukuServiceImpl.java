@@ -121,14 +121,11 @@ public class BukuServiceImpl implements BukuService {
         buku.setJumlahSalinan(request.jumlahSalinan());
         buku.setLokasiRak(request.lokasiRak());
 
-        // Mengambil StatusBuku dari EStatusBuku
         if (request.statusBuku() != null) {
-            // Cari entitas StatusBuku berdasarkan nilai EStatusBuku
             StatusBuku statusBuku = statusBukuRepository.findByStatusBuku(request.statusBuku())
                     .orElseThrow(() -> new RuntimeException("Status Buku " + request.statusBuku() + " tidak ditemukan"));
 
-            // Update statusBuku entitas Buku
-            buku.setStatusBukuTersedia(statusBuku);  // Menetapkan StatusBuku yang ditemukan
+            buku.setStatusBukuTersedia(statusBuku);
         }
 
 
