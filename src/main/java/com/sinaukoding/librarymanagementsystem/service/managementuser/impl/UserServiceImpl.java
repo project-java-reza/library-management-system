@@ -43,16 +43,6 @@ public class UserServiceImpl implements UserService{
         var user = userMapper.requestToEntity(request);
         user.setPassword(passwordEncoder.encode(request.password()));
         userRepository.save(user);
-
-//        Mahasiswa mahasiswa = new Mahasiswa();
-//        mahasiswa.setUser(user);
-//        mahasiswa.setNim(request.mahasiswa().getNim());
-//        mahasiswa.setJurusan(request.mahasiswa().getJurusan());
-//        mahasiswa.setAlamat(request.mahasiswa().getAlamat());
-//        mahasiswa.setPhoneNumber(request.mahasiswa().getPhoneNumber());
-//
-//        mahasiswaRepository.save(mahasiswa);
-
         return user;
     }
 

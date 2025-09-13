@@ -1,6 +1,8 @@
 package com.sinaukoding.librarymanagementsystem.entity.managementuser;
 
 import com.sinaukoding.librarymanagementsystem.entity.app.BaseEntity;
+import com.sinaukoding.librarymanagementsystem.entity.master.Buku;
+import com.sinaukoding.librarymanagementsystem.entity.master.Mahasiswa;
 import com.sinaukoding.librarymanagementsystem.model.enums.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -52,6 +54,9 @@ public class Admin extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false)
     private Role role;
+
+    @OneToOne(mappedBy = "admin", cascade = CascadeType.ALL)
+    private Buku buku;
 
     private String token;
     private LocalDateTime expiredTokenAt;

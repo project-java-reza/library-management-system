@@ -8,5 +8,6 @@ public record BukuFilterRecord(String judulBuku,
                                Integer tahunTerbit,
                                Integer jumlahSalinan,
                                String lokasiRak,
+                               String namaKategori,
                                StatusBuku statusBuku) {
 }

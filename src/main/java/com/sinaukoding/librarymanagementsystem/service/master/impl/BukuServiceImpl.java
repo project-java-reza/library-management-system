@@ -1,19 +1,28 @@
 package com.sinaukoding.librarymanagementsystem.service.master.impl;
 
+import com.sinaukoding.librarymanagementsystem.builder.CustomBuilder;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.Admin;
 import com.sinaukoding.librarymanagementsystem.entity.master.Buku;
 import com.sinaukoding.librarymanagementsystem.entity.master.KategoriBuku;
 import com.sinaukoding.librarymanagementsystem.mapper.master.BukuMapper;
+import com.sinaukoding.librarymanagementsystem.model.app.AppPage;
+import com.sinaukoding.librarymanagementsystem.model.app.SimpleMap;
+import com.sinaukoding.librarymanagementsystem.model.filter.BukuFilterRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.BukuRequestRecord;
 import com.sinaukoding.librarymanagementsystem.repository.managementuser.AdminRepository;
 import com.sinaukoding.librarymanagementsystem.repository.master.BukuRepository;
 import com.sinaukoding.librarymanagementsystem.repository.master.KategoriBukuRepository;
 import com.sinaukoding.librarymanagementsystem.service.master.BukuService;
+import com.sinaukoding.librarymanagementsystem.util.FilterUtil;
 import com.sinaukoding.librarymanagementsystem.util.JwtUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +35,7 @@ public class BukuServiceImpl implements BukuService {
     private final BukuMapper bukuMapper;
 
     @Override
-    public Buku addProfileMahasiswaUser(BukuRequestRecord request, String token) {
+    public Buku addBukuBaru(BukuRequestRecord request, String token) {
         // Membersihkan prefix Bearer
         String prefixBearerToken = token;
         if (prefixBearerToken != null && prefixBearerToken.startsWith("Bearer ")) {
@@ -66,6 +75,54 @@ public class BukuServiceImpl implements BukuService {
         adminRepository.save(admin);
 
         return savedBuku;
+    }
+
+    @Override
+    public Buku editBuku(BukuRequestRecord request, String token) {
+        return null;
+    }
+
+    @Override
+    public Page<SimpleMap> findAllBuku(BukuFilterRecord filterRequest, Pageable pageable) {
+        CustomBuilder<Buku> builder = new CustomBuilder<>();
+
+        FilterUtil.builderConditionNotBlankLike("judulBuku", filterRequest.judulBuku(), builder);
+        FilterUtil.builderConditionNotBlankLike("penulis", filterRequest.penulis(), builder);
+        FilterUtil.builderConditionNotBlankLike("penerbit", filterRequest.penerbit(), builder);
+        FilterUtil.builderConditionNotNullEqual("tahunTerbit", filterRequest.tahunTerbit(), builder);
+        FilterUtil.builderConditionNotNullEqual("jumlahSalinan", filterRequest.jumlahSalinan(), builder);
+        FilterUtil.builderConditionNotBlankLike("lokasiRak", filterRequest.lokasiRak(), builder);
+        FilterUtil.builderConditionNotBlankLike("namaKategori", filterRequest.namaKategori(), builder);
+        FilterUtil.builderConditionNotNullEqual("statusBuku", filterRequest.statusBuku(), builder);
+
+        Page<Buku> listBuku = bukuRepository.findAll(builder.build(), pageable);
+        List<SimpleMap> listData = listBuku.stream().map(buku -> {
+            SimpleMap data = new SimpleMap();
+            data.put("id", buku.getId());
+            data.put("judulBuku", buku.getJudulBuku());
+            data.put("penulis", buku.getPenulis());
+            data.put("penerbit", buku.getPenerbit());
+            data.put("tahunTerbit", buku.getTahunTerbit());
+            data.put("jumlahSalinan", buku.getJumlahSalinan());
+            data.put("lokasiRak", buku.getLokasiRak());
+            data.put("namaKategoriBuku", buku.getNamaKategori());
+            data.put("statusBuku", buku.getStatusBuku());
+            return data;
+        }).toList();
+
+
+
+        return AppPage.create(listData, pageable, listBuku.getTotalElements());
+    }
+
+    @Override
+    public SimpleMap findByIdBuku(String id) {
+        return null;
+    }
+
+    @Override
+    public void deleteByIdBuku(String id) {
+
     }
 
     private void validasiMandatory(BukuRequestRecord request) {
