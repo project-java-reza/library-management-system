@@ -51,7 +51,7 @@ public class MahasiswaServiceImpl implements MahasiswaService {
         }
 
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("User dengan username " + username + " tidak ditemukan."));
+                .orElseThrow(() -> new EntityNotFoundException("Pengguna dengan " + username + " tidak ditemukan."));
 
         validasiMandatory(request);
 
@@ -87,7 +87,7 @@ public class MahasiswaServiceImpl implements MahasiswaService {
         }
 
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("User dengan username " + username + " tidak ditemukan."));
+                .orElseThrow(() -> new EntityNotFoundException("Pengguna dengan " + username + " tidak ditemukan."));
 
         // validasi mandatory
         validasiMandatory(request);
@@ -97,8 +97,8 @@ public class MahasiswaServiceImpl implements MahasiswaService {
             throw new RuntimeException("Nomor HP [" + request.phoneNumber() + "] sudah digunakan");
         }
 
-        Mahasiswa mahasiswa = mahasiswaRepository.findByUser(user)  // Gunakan relasi User ke Mahasiswa
-                .orElseThrow(() -> new EntityNotFoundException("Mahasiswa untuk User dengan username " + username + " tidak ditemukan"));
+        Mahasiswa mahasiswa = mahasiswaRepository.findByUser(user)
+                .orElseThrow(() -> new EntityNotFoundException("Pengguna dengan " + username + " tidak ditemukan"));
 
         mahasiswa.setAlamat(request.alamat() != null ? request.alamat() : mahasiswa.getAlamat());
         mahasiswa.setPhoneNumber(request.phoneNumber() != null ? request.phoneNumber() : mahasiswa.getPhoneNumber());

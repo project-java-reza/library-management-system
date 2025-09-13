@@ -22,13 +22,13 @@ public class UserController {
     @PreAuthorize("hasRole('ANGGOTA')")
     public BaseResponse<?> save(@RequestBody UserRequestRecord request) {
         userService.add(request);
-        return BaseResponse.ok("Data berhasil disimpan", null);
+        return BaseResponse.ok("Data Admin berhasil disimpan", null);
     }
 
     @PostMapping("edit")
     @PreAuthorize("hasRole('ANGGOTA')")
     public BaseResponse<?> edit(@RequestBody UserRequestRecord request) {
         userService.edit(request);
-        return BaseResponse.ok("Data berhasil diubah", null);
+        return BaseResponse.ok("Data Admin berhasil diubah", null);
     }
 }

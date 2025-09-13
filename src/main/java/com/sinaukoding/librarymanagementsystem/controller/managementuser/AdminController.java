@@ -25,14 +25,14 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public BaseResponse<?> save(@RequestBody AdminRequestRecord request) {
         adminService.create(request);
-        return BaseResponse.ok("Data berhasil disimpan", null);
+        return BaseResponse.ok("Data Admin berhasil disimpan", null);
     }
 
     @PostMapping("edit")
     @PreAuthorize("hasRole('ADMIN')")
     public BaseResponse<?> edit(@RequestBody AdminRequestRecord request) {
         adminService.edit(request);
-        return BaseResponse.ok("Data berhasil diubah", null);
+        return BaseResponse.ok("Data Admin berhasil diubah", null);
     }
 
     @PostMapping("find-all")
@@ -65,13 +65,13 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public BaseResponse<?> deleteByIdAdmin(@PathVariable String id) {
         adminService.deleteByIdAdmin(id);
-        return BaseResponse.ok("Delete Admin berhasil", null);
+        return BaseResponse.ok("Delete Data Admin berhasil", null);
     }
 
     @DeleteMapping("/user/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public BaseResponse<?> deleteByIdUser(@PathVariable String id) {
         userService.deleteByIdUser(id);
-        return BaseResponse.ok("Delete User berhasil", null);
+        return BaseResponse.ok("Delete Data User berhasil", null);
     }
 }
