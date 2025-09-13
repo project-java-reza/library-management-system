@@ -13,7 +13,7 @@ public interface MahasiswaService  {
 
     Page<SimpleMap> findAllProfileMahasiswaUser(MahasiswaRequestRecord filterRequest, Pageable pageable);
 
-     SimpleMap findByIdMahasiswaUser(String id);
+    SimpleMap findByIdMahasiswa(String id);
 
     void deleteByIdMahasiswaUser(String id);
 }

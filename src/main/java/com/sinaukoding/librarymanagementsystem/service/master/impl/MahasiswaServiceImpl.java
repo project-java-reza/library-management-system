@@ -1,17 +1,18 @@
 package com.sinaukoding.librarymanagementsystem.service.master.impl;
 
-import com.sinaukoding.librarymanagementsystem.entity.managementuser.Admin;
+import com.sinaukoding.librarymanagementsystem.builder.CustomBuilder;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.User;
 import com.sinaukoding.librarymanagementsystem.entity.master.Mahasiswa;
 import com.sinaukoding.librarymanagementsystem.mapper.master.MahasiswaMapper;
+import com.sinaukoding.librarymanagementsystem.model.app.AppPage;
 import com.sinaukoding.librarymanagementsystem.model.app.SimpleMap;
+import com.sinaukoding.librarymanagementsystem.model.filter.UserFilterRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.MahasiswaRequestRecord;
-import com.sinaukoding.librarymanagementsystem.repository.managementuser.AdminRepository;
 import com.sinaukoding.librarymanagementsystem.repository.managementuser.UserRepository;
 import com.sinaukoding.librarymanagementsystem.repository.master.MahasiswaRepository;
-import com.sinaukoding.librarymanagementsystem.service.managementuser.AdminService;
 import com.sinaukoding.librarymanagementsystem.service.managementuser.UserService;
 import com.sinaukoding.librarymanagementsystem.service.master.MahasiswaService;
+import com.sinaukoding.librarymanagementsystem.util.FilterUtil;
 import com.sinaukoding.librarymanagementsystem.util.JwtUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -37,14 +39,16 @@ public class MahasiswaServiceImpl implements MahasiswaService {
     @Override
     public Mahasiswa addProfileMahasiswaUser(MahasiswaRequestRecord request, String token) {
 
-        String rawToken = token;
-        if (rawToken != null && rawToken.startsWith("Bearer ")) {
-            rawToken = rawToken.substring(7);
+        // Membersihkan prefix Bearer
+        String preBearerToken = token;
+        if (preBearerToken != null && preBearerToken.startsWith("Bearer ")) {
+            preBearerToken = preBearerToken.substring(7);
         }
 
-        String username = jwtUtil.extractUsername(rawToken);
+        // mengambil username dari JWT
+        String username = jwtUtil.extractUsername(preBearerToken);
         if (username == null || username.isBlank()) {
-            throw new BadCredentialsException("Token tidak valid: username kosong.");
+            throw new BadCredentialsException("Username kosong atau tidak valid.");
         }
 
         User user = userRepository.findByUsername(username)
@@ -79,18 +83,21 @@ public class MahasiswaServiceImpl implements MahasiswaService {
     }
 
     @Override
-    public SimpleMap findByIdMahasiswaUser(String id) {
-        var user = mahasiswaRepository.findById(id).orElseThrow(() ->  new RuntimeException("Data mahasiswa tidak ditemukan"));
-        SimpleMap data = new SimpleMap();
-        data.put("id", user.getId());
-        data.put("nim", user.getNim());
-        data.put("jurusan", user.getJurusan());
-        data.put("alamat", user.getAlamat());
-        data.put("phoneNumber", user.getPhoneNumber());
-    return data;
-}
+    public SimpleMap findByIdMahasiswa(String id) {
+        var mahasiswa = mahasiswaRepository.findById(id).orElseThrow(() -> new RuntimeException("Data Mahasiswa tidak ditemukan"));
 
-    @Override
+        SimpleMap data = new SimpleMap();
+        data.put("id", mahasiswa.getId());
+        data.put("name", mahasiswa.getUser());
+        data.put("nim", mahasiswa.getNim());
+        data.put("jurusan", mahasiswa.getJurusan());
+        data.put("alamat", mahasiswa.getAlamat());
+        data.put("phoneNumber", mahasiswa.getPhoneNumber());
+        return data;
+    }
+
+
+        @Override
     public void deleteByIdMahasiswaUser(String id) {
 
     }
