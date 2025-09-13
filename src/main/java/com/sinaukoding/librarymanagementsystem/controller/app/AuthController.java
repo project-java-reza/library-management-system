@@ -19,24 +19,24 @@ public class AuthController {
 
     @PostMapping("login/user")
     public BaseResponse<?> loginUser(@RequestBody LoginRequestRecord request) {
-        return BaseResponse.ok("Successfully Login", authService.loginUser(request));
+        return BaseResponse.ok("Berhasil Login", authService.loginUser(request));
     }
 
     @PostMapping("login/admin")
     public BaseResponse<?> loginAdmin(@RequestBody LoginRequestRecord request) {
-        return BaseResponse.ok("Successfully Login", authService.loginAdmin(request));
+        return BaseResponse.ok("Berhasil Login", authService.loginAdmin(request));
     }
 
     @PostMapping("register/admin")
     public BaseResponse<?> registerAdmin(@RequestBody AdminRequestRecord request) {
         authService.registerAdmin(request);
-        return BaseResponse.ok("Successfully registered admin", null);
+        return BaseResponse.ok("Berhasil Mendaftar sebagai Admin", null);
     }
 
     @PostMapping("register/user")
     public BaseResponse<?> registerUser(@RequestBody UserRequestRecord request) {
         authService.registerUser(request);
-        return BaseResponse.ok("Successfully registered user", null);
+        return BaseResponse.ok("Berhasil Mendaftar sebagai User", null);
     }
 
     @GetMapping("logout")

@@ -22,7 +22,7 @@ public class MahasiswaControllerUser {
     public BaseResponse<?> save(@RequestBody MahasiswaRequestRecord request, HttpServletRequest httpServletRequest) throws Exception {
            String jwtToken = jwtAuthenticationConfig.parseJwt(httpServletRequest);
            mahasiswaService.addProfileMahasiswaUser(request, jwtToken);
-           return BaseResponse.ok("Data berhasil disimpan", null);
+           return BaseResponse.ok("Data Mahasiswa berhasil disimpan", null);
     }
 
     @PostMapping("/mahasiswa/edit")
@@ -30,6 +30,6 @@ public class MahasiswaControllerUser {
     public BaseResponse<?> edit(@RequestBody MahasiswaRequestRecord request, HttpServletRequest httpServletRequest) {
         String jwtToken = jwtAuthenticationConfig.parseJwt(httpServletRequest);
         mahasiswaService.editProfileMahasiswaUser(request, jwtToken);
-        return BaseResponse.ok("Data berhasil diubah", null);
+        return BaseResponse.ok("Data Mahasiswa berhasil diubah", null);
     }
 }

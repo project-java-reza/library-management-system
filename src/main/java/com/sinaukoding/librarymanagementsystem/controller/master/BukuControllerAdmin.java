@@ -55,7 +55,7 @@ public class BukuControllerAdmin {
     @PreAuthorize("hasRole('ADMIN')")
     public BaseResponse<?> deleteById(@PathVariable String id) {
         bukuService.deleteByIdBuku(id);
-        return BaseResponse.ok("Delete Buku Berhasil", null);
+        return BaseResponse.ok("Delete Data Buku Berhasil", null);
     }
 
 }

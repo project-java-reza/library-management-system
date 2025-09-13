@@ -27,7 +27,7 @@ public class KategoriBukuController {
     public BaseResponse<?> save(@RequestBody KategoriBukuRequestRecord request, HttpServletRequest httpServletRequest) throws Exception {
         String jwtToken = jwtAuthenticationConfig.parseJwt(httpServletRequest);
         kategoriBukuService.addKategoriBuku(request, jwtToken);
-        return BaseResponse.ok("Data berhasil disimpan", null);
+        return BaseResponse.ok("Data Kategori Buku berhasil disimpan", null);
     }
 
     @GetMapping("/get-all-kategori-buku")

@@ -34,6 +34,6 @@ public class MahasiswaControllerAdmin {
     @PreAuthorize("hasRole('ADMIN')")
     public BaseResponse<?> deleteById(@PathVariable String id) {
         mahasiswaService.deleteByIdMahasiswaUser(id);
-        return BaseResponse.ok("Delete User Mahasiswa berhasil", null);
+        return BaseResponse.ok("Delete Data User berhasil", null);
     }
 }
