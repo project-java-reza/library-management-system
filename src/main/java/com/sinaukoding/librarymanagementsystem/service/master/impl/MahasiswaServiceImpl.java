@@ -63,7 +63,8 @@ public class MahasiswaServiceImpl implements MahasiswaService {
         mahasiswa.setAlamat(request.alamat());
         mahasiswa.setPhoneNumber(request.phoneNumber());
 
-        mahasiswa.setUser(user);     // owning side
+        mahasiswa.setNama(user.getNama());
+        mahasiswa.setUser(user);
         user.setMahasiswa(mahasiswa);
 
         Mahasiswa saved = mahasiswaRepository.save(mahasiswa);
@@ -79,7 +80,27 @@ public class MahasiswaServiceImpl implements MahasiswaService {
 
     @Override
     public Page<SimpleMap> findAllProfileMahasiswaUser(MahasiswaRequestRecord filterRequest, Pageable pageable) {
-        return null;
+        CustomBuilder<Mahasiswa> builder = new CustomBuilder<>();
+
+        FilterUtil.builderConditionNotBlankLike("nim", filterRequest.nim(), builder);
+        FilterUtil.builderConditionNotBlankLike("nim", filterRequest.nim(), builder);
+        FilterUtil.builderConditionNotBlankLike("jurusan", filterRequest.jurusan(), builder);
+        FilterUtil.builderConditionNotBlankLike("alamat", filterRequest.alamat(), builder);
+        FilterUtil.builderConditionNotBlankLike("phoneNumber", filterRequest.phoneNumber(), builder);
+
+        Page<Mahasiswa> listUser = mahasiswaRepository.findAll(builder.build(), pageable);
+        List<SimpleMap> listData = listUser.stream().map(user -> {
+            SimpleMap data = new SimpleMap();
+            data.put("id", user.getId());
+            data.put("name", user.getUser());
+            data.put("nim", user.getNim());
+            data.put("jurusan", user.getJurusan());
+            data.put("alamat", user.getAlamat());
+            data.put("phoneNumber", user.getPhoneNumber());
+            return data;
+        }).toList();
+
+        return AppPage.create(listData, pageable, listUser.getTotalElements());
     }
 
     @Override
