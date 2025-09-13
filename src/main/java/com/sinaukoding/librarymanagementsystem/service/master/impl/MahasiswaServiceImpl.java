@@ -100,12 +100,11 @@ public class MahasiswaServiceImpl implements MahasiswaService {
         Mahasiswa mahasiswa = mahasiswaRepository.findByUser(user)
                 .orElseThrow(() -> new EntityNotFoundException("Pengguna dengan " + username + " tidak ditemukan"));
 
-        mahasiswa.setAlamat(request.alamat() != null ? request.alamat() : mahasiswa.getAlamat());
-        mahasiswa.setPhoneNumber(request.phoneNumber() != null ? request.phoneNumber() : mahasiswa.getPhoneNumber());
-
-        mahasiswa.setNim(mahasiswa.getNim());
+        mahasiswa.setAlamat(request.alamat());
+        mahasiswa.setPhoneNumber(request.phoneNumber());
+        mahasiswa.setNim(request.nim());
         mahasiswa.setNama(user.getNama());
-        mahasiswa.setJurusan(mahasiswa.getJurusan());
+        mahasiswa.setJurusan(request.jurusan());
         mahasiswaRepository.save(mahasiswa);
         return mahasiswa;
     }
