@@ -12,6 +12,7 @@ import com.sinaukoding.librarymanagementsystem.model.enums.EStatusBuku;
 import com.sinaukoding.librarymanagementsystem.model.filter.BukuFilterRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.BukuRequestRecord;
 import com.sinaukoding.librarymanagementsystem.repository.managementuser.AdminRepository;
+import com.sinaukoding.librarymanagementsystem.repository.managementuser.StatusBukuRepository;
 import com.sinaukoding.librarymanagementsystem.repository.master.BukuRepository;
 import com.sinaukoding.librarymanagementsystem.repository.master.KategoriBukuRepository;
 import com.sinaukoding.librarymanagementsystem.service.managementuser.StatusBukuService;
@@ -37,6 +38,7 @@ public class BukuServiceImpl implements BukuService {
     private final AdminRepository adminRepository;
     private final BukuMapper bukuMapper;
     private final StatusBukuService statusBukuService;
+    private final StatusBukuRepository statusBukuRepository;
 
     @Override
     public Buku addBukuBaru(BukuRequestRecord request, String token) {
@@ -118,6 +120,18 @@ public class BukuServiceImpl implements BukuService {
         buku.setTahunTerbit(request.tahunTerbit());
         buku.setJumlahSalinan(request.jumlahSalinan());
         buku.setLokasiRak(request.lokasiRak());
+
+        // Mengambil StatusBuku dari EStatusBuku
+        if (request.statusBuku() != null) {
+            // Cari entitas StatusBuku berdasarkan nilai EStatusBuku
+            StatusBuku statusBuku = statusBukuRepository.findByStatusBuku(request.statusBuku())
+                    .orElseThrow(() -> new RuntimeException("Status Buku " + request.statusBuku() + " tidak ditemukan"));
+
+            // Update statusBuku entitas Buku
+            buku.setStatusBukuTersedia(statusBuku);  // Menetapkan StatusBuku yang ditemukan
+        }
+
+
         bukuRepository.save(buku);
         return buku;
     }

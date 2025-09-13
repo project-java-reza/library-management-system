@@ -9,5 +9,5 @@ public record BukuRequestRecord(String judulBuku,
                                 Integer jumlahSalinan,
                                 String lokasiRak,
                                 String kategoriBukuId,
-                                EStatusBuku EStatusBuku) {
+                                EStatusBuku statusBuku) {
 }
