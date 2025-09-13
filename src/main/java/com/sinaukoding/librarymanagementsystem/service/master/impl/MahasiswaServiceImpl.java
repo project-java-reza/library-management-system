@@ -6,6 +6,7 @@ import com.sinaukoding.librarymanagementsystem.entity.master.Mahasiswa;
 import com.sinaukoding.librarymanagementsystem.mapper.master.MahasiswaMapper;
 import com.sinaukoding.librarymanagementsystem.model.app.AppPage;
 import com.sinaukoding.librarymanagementsystem.model.app.SimpleMap;
+import com.sinaukoding.librarymanagementsystem.model.filter.MahasiswaFilterRecord;
 import com.sinaukoding.librarymanagementsystem.model.filter.UserFilterRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.MahasiswaRequestRecord;
 import com.sinaukoding.librarymanagementsystem.repository.managementuser.UserRepository;
@@ -79,7 +80,7 @@ public class MahasiswaServiceImpl implements MahasiswaService {
     }
 
     @Override
-    public Page<SimpleMap> findAllProfileMahasiswaUser(MahasiswaRequestRecord filterRequest, Pageable pageable) {
+    public Page<SimpleMap> findAllProfileMahasiswaUser(MahasiswaFilterRecord filterRequest, Pageable pageable) {
         CustomBuilder<Mahasiswa> builder = new CustomBuilder<>();
 
         FilterUtil.builderConditionNotBlankLike("nama", filterRequest.nama(), builder);
@@ -88,8 +89,8 @@ public class MahasiswaServiceImpl implements MahasiswaService {
         FilterUtil.builderConditionNotBlankLike("alamat", filterRequest.alamat(), builder);
         FilterUtil.builderConditionNotBlankLike("phoneNumber", filterRequest.phoneNumber(), builder);
 
-        Page<Mahasiswa> listUser = mahasiswaRepository.findAll(builder.build(), pageable);
-        List<SimpleMap> listData = listUser.stream().map(user -> {
+        Page<Mahasiswa> listMahasiswa = mahasiswaRepository.findAll(builder.build(), pageable);
+        List<SimpleMap> listData = listMahasiswa.stream().map(user -> {
             SimpleMap data = new SimpleMap();
             data.put("id", user.getId());
             data.put("nama", user.getUser().getNama());
@@ -100,7 +101,7 @@ public class MahasiswaServiceImpl implements MahasiswaService {
             return data;
         }).toList();
 
-        return AppPage.create(listData, pageable, listUser.getTotalElements());
+        return AppPage.create(listData, pageable, listMahasiswa.getTotalElements());
     }
 
     @Override

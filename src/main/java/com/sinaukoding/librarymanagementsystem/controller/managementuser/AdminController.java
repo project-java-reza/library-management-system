@@ -1,11 +1,14 @@
 package com.sinaukoding.librarymanagementsystem.controller.managementuser;
 
+import com.sinaukoding.librarymanagementsystem.model.filter.MahasiswaFilterRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.AdminRequestRecord;
 import com.sinaukoding.librarymanagementsystem.model.response.BaseResponse;
 import com.sinaukoding.librarymanagementsystem.service.managementuser.AdminService;
 import com.sinaukoding.librarymanagementsystem.service.master.MahasiswaService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +40,7 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public BaseResponse<?> findAll(@PageableDefault(direction = Sort.Direction.DESC, sort = "modifiedDate") Pageable pageable,
                                    @RequestBody MahasiswaFilterRecord filterRequest) {
-        return BaseResponse.ok(null, adminService.findAll(filterRequest, pageable));
+        return BaseResponse.ok(null, mahasiswaService.findAllProfileMahasiswaUser(filterRequest, pageable));
     }
 
     @GetMapping("find-by-id/{id}")
