@@ -1,6 +1,7 @@
 package com.sinaukoding.librarymanagementsystem.service.managementuser;
 
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.User;
+import com.sinaukoding.librarymanagementsystem.entity.master.Mahasiswa;
 import com.sinaukoding.librarymanagementsystem.model.enums.ERole;
 import com.sinaukoding.librarymanagementsystem.model.enums.Status;
 import com.sinaukoding.librarymanagementsystem.model.request.UserRequestRecord;
@@ -31,7 +32,8 @@ class UserServiceTest {
                 "rizqirezaardiansyah@gmail.com",
                 "reza123",
                 Status.AKTIF,
-                ERole.ADMIN
+                ERole.ADMIN,
+                Mahasiswa.builder().id("1").build()
         );
 
         UserRequestRecord requestUser2 = new UserRequestRecord(null,
@@ -40,7 +42,8 @@ class UserServiceTest {
                 "rizqirezaardiansyahJava@gmail.com",
                 "rizqi123",
                 Status.AKTIF,
-                ERole.ANGGOTA
+                ERole.ANGGOTA,
+                Mahasiswa.builder().id("2").build()
         );
         User addUser1 = userService.add(requestUser1);
         User addUser2 = userService.add(requestUser2);
@@ -61,7 +64,8 @@ class UserServiceTest {
                 "rizqirezaardiansyah@gmail.com",
                 "reza123",
                 Status.AKTIF,
-                ERole.ANGGOTA
+                ERole.ANGGOTA,
+                Mahasiswa.builder().id("2").build()
         );
 
         userService.edit(existingUserRequest);
@@ -91,7 +95,7 @@ class UserServiceTest {
     @Test
     void deleteUserById() {
         String userId = "9057e72d-cc80-4747-9a0b-b6a1c85f11a1";
-        userService.deleteById(userId);
+        userService.deleteByIdUser(userId);
         assertTrue(true);
     }
 }

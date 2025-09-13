@@ -13,10 +13,10 @@ public interface UserService {
 
     User edit(UserRequestRecord request);
 
-    Page<SimpleMap> findAll(UserFilterRecord filterRequest, Pageable pageable);
+    Page<SimpleMap> findAllProfileUser(UserFilterRecord filterRequest, Pageable pageable);
 
-    SimpleMap findById(String id);
+    SimpleMap findByIdUser(String id);
 
-    void deleteById(String id);
+    void deleteByIdUser(String id);
 
 }
