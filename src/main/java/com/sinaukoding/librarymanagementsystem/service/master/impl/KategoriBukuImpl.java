@@ -39,7 +39,7 @@ public class KategoriBukuImpl implements KategoriBukuService {
         }
 
         Admin admin = adminRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("User dengan username " + username + " tidak ditemukan."));
+                .orElseThrow(() -> new EntityNotFoundException("Pengguna dengan " + username + " tidak ditemukan."));
 
         KategoriBuku kategoriBuku = kategoriBukuMapper.requestToEntity(request);
         kategoriBuku.setNamaKategoriBuku(request.namaKategoriBuku());

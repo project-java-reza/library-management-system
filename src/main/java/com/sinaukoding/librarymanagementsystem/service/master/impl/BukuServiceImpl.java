@@ -50,7 +50,7 @@ public class BukuServiceImpl implements BukuService {
         }
 
         Admin admin = adminRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("User dengan username " + username + " tidak ditemukan."));
+                .orElseThrow(() -> new EntityNotFoundException("Pengguna Dengan " + username + " tidak ditemukan."));
 
         validasiMandatory(request);
 
@@ -93,7 +93,7 @@ public class BukuServiceImpl implements BukuService {
         }
 
         Admin admin = adminRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("Admin dengan username " + username + " tidak ditemukan."));
+                .orElseThrow(() -> new EntityNotFoundException("Pengguna dengan " + username + " tidak ditemukan."));
 
         // validasi mandatory
         validasiMandatory(request);
