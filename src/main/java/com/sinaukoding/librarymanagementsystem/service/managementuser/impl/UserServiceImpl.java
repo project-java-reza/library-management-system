@@ -25,7 +25,6 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-    //private final MahasiswaRepository mahasiswaRepository;
 
     @Override
     public User add(UserRequestRecord request) {

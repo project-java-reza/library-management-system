@@ -27,13 +27,13 @@ public class KategoriBukuImpl implements KategoriBukuService {
     @Override
     public KategoriBuku addKategoriBuku(KategoriBukuRequestRecord request, String token) {
         // Membersihkan prefix Bearer
-        String preBearerToken = token;
-        if (preBearerToken != null && preBearerToken.startsWith("Bearer ")) {
-            preBearerToken = preBearerToken.substring(7);
+        String prefixBearerToken = token;
+        if (prefixBearerToken != null && prefixBearerToken.startsWith("Bearer ")) {
+            prefixBearerToken = prefixBearerToken.substring(7);
         }
 
         // mengambil username dari JWT
-        String username = jwtUtil.extractUsername(preBearerToken);
+        String username = jwtUtil.extractUsername(prefixBearerToken);
         if (username == null || username.isBlank()) {
             throw new BadCredentialsException("Username kosong atau tidak valid.");
         }
