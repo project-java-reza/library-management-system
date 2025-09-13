@@ -66,10 +66,10 @@ public class MahasiswaServiceImpl implements MahasiswaService {
         mahasiswa.setUser(user);
         user.setMahasiswa(mahasiswa);
 
-        Mahasiswa saved = mahasiswaRepository.save(mahasiswa);
+        Mahasiswa simpanMahasiswa = mahasiswaRepository.save(mahasiswa);
         userRepository.save(user);
 
-        return saved;
+        return simpanMahasiswa;
     }
 
     @Override
