@@ -5,6 +5,7 @@ import com.sinaukoding.librarymanagementsystem.model.response.BaseResponse;
 import com.sinaukoding.librarymanagementsystem.service.managementuser.AdminService;
 import com.sinaukoding.librarymanagementsystem.service.master.MahasiswaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,12 +33,12 @@ public class AdminController {
 //        return BaseResponse.ok("Data berhasil diubah", null);
 //    }
 
-//    @PostMapping("find-all")
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public BaseResponse<?> findAll(@PageableDefault(direction = Sort.Direction.DESC, sort = "modifiedDate") Pageable pageable,
-//                                   @RequestBody UserFilterRecord filterRequest) {
-//        return BaseResponse.ok(null, adminService.findAll(filterRequest, pageable));
-//    }
+    @PostMapping("/mahasiswa/find-all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public BaseResponse<?> findAll(@PageableDefault(direction = Sort.Direction.DESC, sort = "modifiedDate") Pageable pageable,
+                                   @RequestBody MahasiswaFilterRecord filterRequest) {
+        return BaseResponse.ok(null, adminService.findAll(filterRequest, pageable));
+    }
 
     @GetMapping("find-by-id/{id}")
     @PreAuthorize("hasRole('ADMIN')")
