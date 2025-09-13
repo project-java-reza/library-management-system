@@ -2,7 +2,7 @@ package com.sinaukoding.librarymanagementsystem.entity.master;
 
 import com.sinaukoding.librarymanagementsystem.entity.app.BaseEntity;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.Admin;
-import com.sinaukoding.librarymanagementsystem.model.enums.StatusBuku;
+import com.sinaukoding.librarymanagementsystem.entity.managementuser.StatusBuku;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -24,7 +24,7 @@ import lombok.experimental.SuperBuilder;
         @Index(name = "idx_buku_tahun_terbit", columnList = "tahunTerbit"),
         @Index(name = "idx_buku_jumlah_salinan", columnList = "jumlahSalinan"),
         @Index(name = "idx_buku_lokasi_rak", columnList = "lokasiRak"),
-        @Index(name = "idx_buku_status_buku", columnList = "statusBuku"),
+        @Index(name = "idx_buku_status_buku_tersedia", columnList = "statusBukuTersedia"),
 })
 public class Buku extends BaseEntity {
 
@@ -61,7 +61,9 @@ public class Buku extends BaseEntity {
     @Column(name = "nama_kategori", nullable = false)
     private String namaKategori;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status_buku", nullable = false)
-    private StatusBuku statusBuku;
+    // Banyak buku bisa memiliki satu status
+    // relasi ke tabel m_status_buku
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "status_buku_tersedia")
+    private StatusBuku statusBukuTersedia;
 }

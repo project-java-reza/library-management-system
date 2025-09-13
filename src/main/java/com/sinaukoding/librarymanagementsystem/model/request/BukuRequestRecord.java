@@ -1,6 +1,6 @@
 package com.sinaukoding.librarymanagementsystem.model.request;
 
-import com.sinaukoding.librarymanagementsystem.model.enums.StatusBuku;
+import com.sinaukoding.librarymanagementsystem.model.enums.EStatusBuku;
 
 public record BukuRequestRecord(String judulBuku,
                                 String penulis,
@@ -9,5 +9,5 @@ public record BukuRequestRecord(String judulBuku,
                                 Integer jumlahSalinan,
                                 String lokasiRak,
                                 String kategoriBukuId,
-                                StatusBuku statusBuku) {
+                                EStatusBuku EStatusBuku) {
 }
