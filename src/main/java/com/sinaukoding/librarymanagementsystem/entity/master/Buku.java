@@ -50,11 +50,11 @@ public class Buku extends BaseEntity {
     @Column(name = "lokasi_rak", nullable = false)
     private String lokasiRak;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "kategori_buku_id", nullable = false)
     private KategoriBuku kategoriBukuId;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne
     @JoinColumn(name = "admin_id")
     private Admin admin;
 
