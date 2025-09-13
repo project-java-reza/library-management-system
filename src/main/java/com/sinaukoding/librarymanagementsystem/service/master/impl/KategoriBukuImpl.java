@@ -57,8 +57,8 @@ public class KategoriBukuImpl implements KategoriBukuService {
 
         validasiMandatory(request);
 
-        KategoriBuku saved = kategoriBukuRepository.save(kategoriBuku);
-        return saved;
+        KategoriBuku simpanKategoriBuku = kategoriBukuRepository.save(kategoriBuku);
+        return simpanKategoriBuku;
     }
 
     @Override

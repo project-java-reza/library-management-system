@@ -79,11 +79,11 @@ public class BukuServiceImpl implements BukuService {
 
         buku.setAdmin(admin);
 
-        Buku savedBuku = bukuRepository.save(buku);
-        bukuRepository.save(savedBuku);
+        Buku simpanBuku = bukuRepository.save(buku);
+        bukuRepository.save(simpanBuku);
         adminRepository.save(admin);
 
-        return savedBuku;
+        return simpanBuku;
     }
 
     @Override
