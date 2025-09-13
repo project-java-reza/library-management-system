@@ -97,7 +97,7 @@ public class MahasiswaServiceImpl implements MahasiswaService {
             throw new RuntimeException("Nomor HP [" + request.phoneNumber() + "] sudah digunakan");
         }
 
-        Mahasiswa mahasiswa = mahasiswaRepository.findByUser(user)  // Gunakan relasi User ke Mahasiswa
+        Mahasiswa mahasiswa = mahasiswaRepository.findByUser(user)
                 .orElseThrow(() -> new EntityNotFoundException("Mahasiswa untuk User dengan username " + username + " tidak ditemukan"));
 
         mahasiswa.setAlamat(request.alamat() != null ? request.alamat() : mahasiswa.getAlamat());
