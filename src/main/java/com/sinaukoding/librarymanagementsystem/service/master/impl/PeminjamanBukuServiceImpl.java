@@ -1,12 +1,15 @@
 package com.sinaukoding.librarymanagementsystem.service.master.impl;
 
+import com.sinaukoding.librarymanagementsystem.entity.managementuser.StatusBuku;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.User;
 import com.sinaukoding.librarymanagementsystem.entity.master.Buku;
 import com.sinaukoding.librarymanagementsystem.entity.master.PeminjamanBuku;
 import com.sinaukoding.librarymanagementsystem.mapper.master.PeminjamanBukuMapper;
 import com.sinaukoding.librarymanagementsystem.model.app.SimpleMap;
+import com.sinaukoding.librarymanagementsystem.model.enums.EStatusBuku;
 import com.sinaukoding.librarymanagementsystem.model.filter.PeminjamanBukuFilterRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.PeminjamanBukuRequestRecord;
+import com.sinaukoding.librarymanagementsystem.repository.managementuser.StatusBukuRepository;
 import com.sinaukoding.librarymanagementsystem.repository.managementuser.UserRepository;
 import com.sinaukoding.librarymanagementsystem.repository.master.BukuRepository;
 import com.sinaukoding.librarymanagementsystem.repository.master.PeminjamanBukuRepository;
@@ -28,6 +31,7 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
     private final PeminjamanBukuRepository peminjamanBukuRepository;
     private final BukuRepository bukuRepository;
     private final PeminjamanBukuMapper peminjamanBukuMapper;
+    private final StatusBukuRepository statusBukuRepository;
 
     @Override
     public PeminjamanBuku addPeminjamanBuku(PeminjamanBukuRequestRecord request, String token) {
@@ -59,10 +63,16 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
 
         // mengurangi jumlah salinan buku
         buku.setJumlahSalinan(buku.getJumlahSalinan() - 1);
+
+        if (buku.getJumlahSalinan() == 0) {
+            StatusBuku statusBuku = statusBukuRepository.findByStatusBuku(EStatusBuku.TIDAK_TERSEDIA)
+                    .orElseThrow(()-> new EntityNotFoundException("Buku tidak ditemukan"));
+                    buku.setStatusBukuTersedia(statusBuku);
+        }
+
         bukuRepository.save(buku);
 
         PeminjamanBuku peminjamanBuku = peminjamanBukuMapper.requestToEntity(request);
-
         peminjamanBuku.setTanggalPinjam(request.tanggalPinjam());
         peminjamanBuku.setTanggalKembali(request.tanggalKembali());
         peminjamanBuku.setStatusBukuPinjaman(request.statusBukuPinjaman());
@@ -70,11 +80,11 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
         peminjamanBuku.setBuku(buku);
         peminjamanBuku.setUser(user);
 
-        PeminjamanBuku savedPeminjamanBuku = peminjamanBukuRepository.save(peminjamanBuku);
-        peminjamanBukuRepository.save(savedPeminjamanBuku);
+        PeminjamanBuku simpanPeminjamanBuku = peminjamanBukuRepository.save(peminjamanBuku);
+        peminjamanBukuRepository.save(simpanPeminjamanBuku);
         userRepository.save(user);
 
-        return savedPeminjamanBuku;
+        return simpanPeminjamanBuku;
     }
 
     @Override
