@@ -5,9 +5,8 @@ import lombok.Getter;
 @Getter
 public enum StatusBuku {
     TERSEDIA("Tersedia"),
-    DIPINJAM("Dipinjam"),
-    SUDAH_DIBOOKING("Sudah Dibooking"),
-    HILANG("Hilang");
+    TIDAK_TERSEDIA("Tidak Tersedia"),
+    SUDAH_DIBOOKING("Sudah Dibooking");
 
     private final String label;
 
