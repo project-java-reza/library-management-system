@@ -73,8 +73,41 @@ public class MahasiswaServiceImpl implements MahasiswaService {
     }
 
     @Override
-    public Mahasiswa editProfileMahasiswaUser(MahasiswaRequestRecord request) {
-        return null;
+    public Mahasiswa editProfileMahasiswaUser(MahasiswaRequestRecord request, String token) {
+        // Membersihkan prefix Bearer
+        String preBearerToken = token;
+        if (preBearerToken != null && preBearerToken.startsWith("Bearer ")) {
+            preBearerToken = preBearerToken.substring(7);
+        }
+
+        // mengambil username dari JWT
+        String username = jwtUtil.extractUsername(preBearerToken);
+        if (username == null || username.isBlank()) {
+            throw new BadCredentialsException("Username kosong atau tidak valid.");
+        }
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("User dengan username " + username + " tidak ditemukan."));
+
+        // validasi mandatory
+        validasiMandatory(request);
+
+        // validasi data existing
+        if (mahasiswaRepository.existsByPhoneNumber(request.phoneNumber())) {
+            throw new RuntimeException("Nomor HP [" + request.phoneNumber() + "] sudah digunakan");
+        }
+
+        Mahasiswa mahasiswa = mahasiswaRepository.findByUser(user)  // Gunakan relasi User ke Mahasiswa
+                .orElseThrow(() -> new EntityNotFoundException("Mahasiswa untuk User dengan username " + username + " tidak ditemukan"));
+
+        mahasiswa.setAlamat(request.alamat() != null ? request.alamat() : mahasiswa.getAlamat());
+        mahasiswa.setPhoneNumber(request.phoneNumber() != null ? request.phoneNumber() : mahasiswa.getPhoneNumber());
+
+        mahasiswa.setNim(mahasiswa.getNim());
+        mahasiswa.setNama(user.getNama());
+        mahasiswa.setJurusan(mahasiswa.getJurusan());
+        mahasiswaRepository.save(mahasiswa);
+        return mahasiswa;
     }
 
     @Override
@@ -116,9 +149,10 @@ public class MahasiswaServiceImpl implements MahasiswaService {
     }
 
 
-        @Override
+    @Override
     public void deleteByIdMahasiswaUser(String id) {
-
+        var mahasiswa = mahasiswaRepository.findById(id).orElseThrow(() -> new RuntimeException("User tidak ditemukan"));
+        mahasiswaRepository.deleteById(id);
     }
 
     private void validasiMandatory(MahasiswaRequestRecord request) {

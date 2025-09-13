@@ -10,14 +10,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("user/mahasiswa")
+@RequestMapping("user")
 @RequiredArgsConstructor
-public class MahasiswaController {
+public class MahasiswaControllerUser {
 
     private final MahasiswaService mahasiswaService;
     private final JwtAuthenticationConfig jwtAuthenticationConfig;
 
-    @PostMapping("save")
+    @PostMapping("/mahasiswa/save")
     @PreAuthorize("hasRole('ANGGOTA')")
     public BaseResponse<?> save(@RequestBody MahasiswaRequestRecord request, HttpServletRequest httpServletRequest) throws Exception {
            String jwtToken = jwtAuthenticationConfig.parseJwt(httpServletRequest);
@@ -25,10 +25,11 @@ public class MahasiswaController {
            return BaseResponse.ok("Data berhasil disimpan", null);
     }
 
-    @PostMapping("edit")
+    @PostMapping("/mahasiswa/edit")
     @PreAuthorize("hasRole('ANGGOTA')")
-    public BaseResponse<?> edit(@RequestBody MahasiswaRequestRecord request) {
-        mahasiswaService.editProfileMahasiswaUser(request);
+    public BaseResponse<?> edit(@RequestBody MahasiswaRequestRecord request, HttpServletRequest httpServletRequest) {
+        String jwtToken = jwtAuthenticationConfig.parseJwt(httpServletRequest);
+        mahasiswaService.editProfileMahasiswaUser(request, jwtToken);
         return BaseResponse.ok("Data berhasil diubah", null);
     }
 }

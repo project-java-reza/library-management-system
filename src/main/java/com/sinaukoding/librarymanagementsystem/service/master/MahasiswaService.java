@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 public interface MahasiswaService  {
     Mahasiswa addProfileMahasiswaUser(MahasiswaRequestRecord request, String token);
 
-    Mahasiswa editProfileMahasiswaUser(MahasiswaRequestRecord request);
+    Mahasiswa editProfileMahasiswaUser(MahasiswaRequestRecord request, String token);
 
     Page<SimpleMap> findAllProfileMahasiswaUser(MahasiswaFilterRecord filterRequest, Pageable pageable);
 

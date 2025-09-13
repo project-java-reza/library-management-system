@@ -1,10 +1,11 @@
 package com.sinaukoding.librarymanagementsystem.controller.managementuser;
 
-import com.sinaukoding.librarymanagementsystem.model.filter.MahasiswaFilterRecord;
+import com.sinaukoding.librarymanagementsystem.model.filter.AdminFilterRecord;
+import com.sinaukoding.librarymanagementsystem.model.filter.UserFilterRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.AdminRequestRecord;
 import com.sinaukoding.librarymanagementsystem.model.response.BaseResponse;
 import com.sinaukoding.librarymanagementsystem.service.managementuser.AdminService;
-import com.sinaukoding.librarymanagementsystem.service.master.MahasiswaService;
+import com.sinaukoding.librarymanagementsystem.service.managementuser.UserService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
     private final AdminService adminService;
-    private final MahasiswaService mahasiswaService;
+    private final UserService userService;
 
     @PostMapping("save")
     @PreAuthorize("hasRole('ADMIN')")
@@ -27,20 +28,25 @@ public class AdminController {
         return BaseResponse.ok("Data berhasil disimpan", null);
     }
 
-
-
-//    @PostMapping("edit")
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public BaseResponse<?> edit(@RequestBody AdminRequestRecord request) {
-//        adminService.edit(request);
-//        return BaseResponse.ok("Data berhasil diubah", null);
-//    }
-
-    @PostMapping("/mahasiswa/find-all")
+    @PostMapping("edit")
     @PreAuthorize("hasRole('ADMIN')")
-    public BaseResponse<?> findAll(@PageableDefault(direction = Sort.Direction.DESC, sort = "modifiedDate") Pageable pageable,
-                                   @RequestBody MahasiswaFilterRecord filterRequest) {
-        return BaseResponse.ok(null, mahasiswaService.findAllProfileMahasiswaUser(filterRequest, pageable));
+    public BaseResponse<?> edit(@RequestBody AdminRequestRecord request) {
+        adminService.edit(request);
+        return BaseResponse.ok("Data berhasil diubah", null);
+    }
+
+    @PostMapping("find-all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public BaseResponse<?> findAllAdmin(@PageableDefault(direction = Sort.Direction.DESC, sort = "modifiedDate") Pageable pageable,
+                                   @RequestBody AdminFilterRecord filterRequest) {
+        return BaseResponse.ok(null, adminService.findAllProfileAdmin(filterRequest, pageable));
+    }
+
+    @PostMapping("/user/find-all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public BaseResponse<?> findAllUser(@PageableDefault(direction = Sort.Direction.DESC, sort = "modifiedDate") Pageable pageable,
+                                   @RequestBody UserFilterRecord filterRequest) {
+        return BaseResponse.ok(null, userService.findAllProfileUser(filterRequest, pageable));
     }
 
     @GetMapping("find-by-id/{id}")
@@ -49,18 +55,23 @@ public class AdminController {
         return BaseResponse.ok(null, adminService.findById(id));
     }
 
-    @GetMapping("/mahasiswa/find-by-id/{id}")
+    @GetMapping("/user/find-by-id/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public BaseResponse<?> findByIdMahasiswa(@PathVariable String id) {
-        return BaseResponse.ok(null, mahasiswaService.findByIdMahasiswa(id));
+    public BaseResponse<?> findByIdUser(@PathVariable String id) {
+        return BaseResponse.ok(null, userService.findByIdUser(id));
     }
 
-//    @DeleteMapping("delete/{id}")
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public BaseResponse<?> deleteById(@PathVariable String id) {
-//        adminService.deleteById(id);
-//        return BaseResponse.ok("Delete berhasil", null);
-//
-//    }
+    @DeleteMapping("delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public BaseResponse<?> deleteByIdAdmin(@PathVariable String id) {
+        adminService.deleteByIdAdmin(id);
+        return BaseResponse.ok("Delete Admin berhasil", null);
+    }
 
+    @DeleteMapping("/user/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public BaseResponse<?> deleteByIdUser(@PathVariable String id) {
+        userService.deleteByIdUser(id);
+        return BaseResponse.ok("Delete User berhasil", null);
+    }
 }

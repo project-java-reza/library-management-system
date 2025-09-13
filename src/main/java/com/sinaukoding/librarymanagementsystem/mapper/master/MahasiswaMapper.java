@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class MahasiswaMapper {
     public Mahasiswa requestToEntity(MahasiswaRequestRecord request) {
         Mahasiswa mahasiswa = Mahasiswa.builder()
+                .nama(request.nama())
                 .nim(request.nim())
                 .jurusan(request.jurusan().toUpperCase())
                 .alamat(request.alamat().toUpperCase())

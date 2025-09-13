@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Page<SimpleMap> findAll(UserFilterRecord filterRequest, Pageable pageable) {
+    public Page<SimpleMap> findAllProfileUser(UserFilterRecord filterRequest, Pageable pageable) {
         CustomBuilder<User> builder = new CustomBuilder<>();
 
         FilterUtil.builderConditionNotBlankLike("nama", filterRequest.nama(), builder);
@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public SimpleMap findById(String id) {
+    public SimpleMap findByIdUser(String id) {
         var user = userRepository.findById(id).orElseThrow(() ->  new RuntimeException("Data user tidak ditemukan"));
         SimpleMap data = new SimpleMap();
         data.put("id", user.getId());
@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void deleteById(String id) {
+    public void deleteByIdUser(String id) {
         var user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User tidak ditemukan"));
         userRepository.deleteById(id);
     }
