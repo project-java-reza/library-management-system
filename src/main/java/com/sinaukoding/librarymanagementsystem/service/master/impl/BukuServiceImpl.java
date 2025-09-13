@@ -4,14 +4,17 @@ import com.sinaukoding.librarymanagementsystem.builder.CustomBuilder;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.Admin;
 import com.sinaukoding.librarymanagementsystem.entity.master.Buku;
 import com.sinaukoding.librarymanagementsystem.entity.master.KategoriBuku;
+import com.sinaukoding.librarymanagementsystem.entity.managementuser.StatusBuku;
 import com.sinaukoding.librarymanagementsystem.mapper.master.BukuMapper;
 import com.sinaukoding.librarymanagementsystem.model.app.AppPage;
 import com.sinaukoding.librarymanagementsystem.model.app.SimpleMap;
+import com.sinaukoding.librarymanagementsystem.model.enums.EStatusBuku;
 import com.sinaukoding.librarymanagementsystem.model.filter.BukuFilterRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.BukuRequestRecord;
 import com.sinaukoding.librarymanagementsystem.repository.managementuser.AdminRepository;
 import com.sinaukoding.librarymanagementsystem.repository.master.BukuRepository;
 import com.sinaukoding.librarymanagementsystem.repository.master.KategoriBukuRepository;
+import com.sinaukoding.librarymanagementsystem.service.managementuser.StatusBukuService;
 import com.sinaukoding.librarymanagementsystem.service.master.BukuService;
 import com.sinaukoding.librarymanagementsystem.util.FilterUtil;
 import com.sinaukoding.librarymanagementsystem.util.JwtUtil;
@@ -33,6 +36,7 @@ public class BukuServiceImpl implements BukuService {
     private final KategoriBukuRepository kategoriBukuRepository;
     private final AdminRepository adminRepository;
     private final BukuMapper bukuMapper;
+    private final StatusBukuService statusBukuService;
 
     @Override
     public Buku addBukuBaru(BukuRequestRecord request, String token) {
@@ -53,6 +57,9 @@ public class BukuServiceImpl implements BukuService {
 
         validasiMandatory(request);
 
+
+        StatusBuku statusBuku = statusBukuService.getOrSave(EStatusBuku.TERSEDIA);
+
         KategoriBuku kategoriBuku = kategoriBukuRepository.findById(request.kategoriBukuId())
                 .orElseThrow(() -> new EntityNotFoundException("Kategori Buku dengan ID " + request.kategoriBukuId() + " tidak ditemukan"));
 
@@ -66,7 +73,7 @@ public class BukuServiceImpl implements BukuService {
         buku.setLokasiRak(request.lokasiRak());
         buku.setNamaKategori(kategoriBuku.getNamaKategoriBuku());
         buku.setKategoriBukuId(kategoriBuku);
-        buku.setStatusBuku(request.statusBuku());
+        buku.setStatusBukuTersedia(statusBuku);
 
         buku.setAdmin(admin);
 
@@ -111,7 +118,6 @@ public class BukuServiceImpl implements BukuService {
         buku.setTahunTerbit(request.tahunTerbit());
         buku.setJumlahSalinan(request.jumlahSalinan());
         buku.setLokasiRak(request.lokasiRak());
-        buku.setStatusBuku(request.statusBuku());
         bukuRepository.save(buku);
         return buku;
     }
@@ -127,7 +133,7 @@ public class BukuServiceImpl implements BukuService {
         FilterUtil.builderConditionNotNullEqual("jumlahSalinan", filterRequest.jumlahSalinan(), builder);
         FilterUtil.builderConditionNotBlankLike("lokasiRak", filterRequest.lokasiRak(), builder);
         FilterUtil.builderConditionNotBlankLike("namaKategori", filterRequest.namaKategori(), builder);
-        FilterUtil.builderConditionNotNullEqual("statusBuku", filterRequest.statusBuku(), builder);
+        FilterUtil.builderConditionNotNullEqual("statusBuku", filterRequest.EStatusBuku(), builder);
 
         Page<Buku> listBuku = bukuRepository.findAll(builder.build(), pageable);
         List<SimpleMap> listData = listBuku.stream().map(buku -> {
@@ -140,7 +146,7 @@ public class BukuServiceImpl implements BukuService {
             data.put("jumlahSalinan", buku.getJumlahSalinan());
             data.put("lokasiRak", buku.getLokasiRak());
             data.put("namaKategoriBuku", buku.getNamaKategori());
-            data.put("statusBuku", buku.getStatusBuku());
+            data.put("statusBuku", buku.getStatusBukuTersedia());
             return data;
         }).toList();
         return AppPage.create(listData, pageable, listBuku.getTotalElements());
@@ -159,7 +165,7 @@ public class BukuServiceImpl implements BukuService {
         data.put("jumlahSalinan", buku.getJumlahSalinan());
         data.put("lokasiRak", buku.getLokasiRak());
         data.put("namaKategoriBuku", buku.getNamaKategori());
-        data.put("statusBuku", buku.getStatusBuku());
+        data.put("statusBuku", buku.getStatusBukuTersedia());
         return data;
     }
 
