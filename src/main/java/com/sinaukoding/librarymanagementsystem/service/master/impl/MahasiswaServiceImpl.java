@@ -102,9 +102,9 @@ public class MahasiswaServiceImpl implements MahasiswaService {
 
         mahasiswa.setAlamat(request.alamat());
         mahasiswa.setPhoneNumber(request.phoneNumber());
-        mahasiswa.setNim(mahasiswa.getNim());
+        mahasiswa.setNim(request.nim());
         mahasiswa.setNama(user.getNama());
-        mahasiswa.setJurusan(mahasiswa.getJurusan());
+        mahasiswa.setJurusan(request.jurusan());
         mahasiswaRepository.save(mahasiswa);
         return mahasiswa;
     }
