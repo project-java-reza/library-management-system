@@ -1,6 +1,7 @@
 package com.sinaukoding.librarymanagementsystem.entity.master;
 
 import com.sinaukoding.librarymanagementsystem.entity.app.BaseEntity;
+import com.sinaukoding.librarymanagementsystem.entity.managementuser.Admin;
 import com.sinaukoding.librarymanagementsystem.model.enums.KategoriBukuEnum;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,5 +30,9 @@ public class KategoriBuku extends BaseEntity {
 
     @Column(name = "deskripsi_kategori", length = 255)
     private String deskripsiKategori;
+
+    @OneToOne
+    @JoinColumn(name = "admin_id")
+    private Admin admin;
 
 }
