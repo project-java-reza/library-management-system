@@ -82,7 +82,7 @@ public class MahasiswaServiceImpl implements MahasiswaService {
     public Page<SimpleMap> findAllProfileMahasiswaUser(MahasiswaRequestRecord filterRequest, Pageable pageable) {
         CustomBuilder<Mahasiswa> builder = new CustomBuilder<>();
 
-        FilterUtil.builderConditionNotBlankLike("nim", filterRequest.nim(), builder);
+        FilterUtil.builderConditionNotBlankLike("nama", filterRequest.nama(), builder);
         FilterUtil.builderConditionNotBlankLike("nim", filterRequest.nim(), builder);
         FilterUtil.builderConditionNotBlankLike("jurusan", filterRequest.jurusan(), builder);
         FilterUtil.builderConditionNotBlankLike("alamat", filterRequest.alamat(), builder);
@@ -92,7 +92,7 @@ public class MahasiswaServiceImpl implements MahasiswaService {
         List<SimpleMap> listData = listUser.stream().map(user -> {
             SimpleMap data = new SimpleMap();
             data.put("id", user.getId());
-            data.put("name", user.getUser());
+            data.put("nama", user.getUser().getNama());
             data.put("nim", user.getNim());
             data.put("jurusan", user.getJurusan());
             data.put("alamat", user.getAlamat());
@@ -108,8 +108,7 @@ public class MahasiswaServiceImpl implements MahasiswaService {
         var mahasiswa = mahasiswaRepository.findById(id).orElseThrow(() -> new RuntimeException("Data Mahasiswa tidak ditemukan"));
 
         SimpleMap data = new SimpleMap();
-        data.put("id", mahasiswa.getId());
-        data.put("name", mahasiswa.getUser());
+        data.put("nama", mahasiswa.getUser().getNama());
         data.put("nim", mahasiswa.getNim());
         data.put("jurusan", mahasiswa.getJurusan());
         data.put("alamat", mahasiswa.getAlamat());
