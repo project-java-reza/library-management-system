@@ -6,8 +6,7 @@ import lombok.Getter;
 public enum EStatusBuku {
 
     TERSEDIA("Tersedia"),
-    TIDAK_TERSEDIA("Tidak Tersedia"),
-    SUDAH_DIBOOKING("Sudah Dibooking");
+    TIDAK_TERSEDIA("Tidak Tersedia");
 
     private final String label;
 
