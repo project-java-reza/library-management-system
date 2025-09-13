@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -79,7 +80,41 @@ public class BukuServiceImpl implements BukuService {
 
     @Override
     public Buku editBuku(BukuRequestRecord request, String token) {
-        return null;
+        // Membersihkan prefix Bearer
+        String prefixBearerToken = token;
+        if (prefixBearerToken != null && prefixBearerToken.startsWith("Bearer ")) {
+            prefixBearerToken = prefixBearerToken.substring(7);
+        }
+
+        // mengambil username dari JWT
+        String username = jwtUtil.extractUsername(prefixBearerToken);
+        if (username == null || username.isBlank()) {
+            throw new BadCredentialsException("Username kosong atau tidak valid.");
+        }
+
+        Admin admin = adminRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("Admin dengan username " + username + " tidak ditemukan."));
+
+        // validasi mandatory
+        validasiMandatory(request);
+
+        // validasi data existing
+        if(bukuRepository.existsByLokasiRak(request.lokasiRak())) {
+            throw new RuntimeException("Lokasi Rak [" + request.lokasiRak() + "] sudah ada");
+        }
+
+        Buku buku = bukuRepository.findByAdmin(admin)
+                .orElseThrow(() -> new EntityNotFoundException("Pengguna dengan " + username + " tidak ditemukan"));
+
+        buku.setJudulBuku(request.judulBuku());
+        buku.setPenulis(request.penulis());
+        buku.setPenerbit(request.penerbit());
+        buku.setTahunTerbit(request.tahunTerbit());
+        buku.setJumlahSalinan(request.jumlahSalinan());
+        buku.setLokasiRak(request.lokasiRak());
+        buku.setStatusBuku(request.statusBuku());
+        bukuRepository.save(buku);
+        return buku;
     }
 
     @Override
@@ -109,20 +144,30 @@ public class BukuServiceImpl implements BukuService {
             data.put("statusBuku", buku.getStatusBuku());
             return data;
         }).toList();
-
-
-
         return AppPage.create(listData, pageable, listBuku.getTotalElements());
     }
 
     @Override
     public SimpleMap findByIdBuku(String id) {
-        return null;
+        var buku = bukuRepository.findById(id).orElseThrow(() -> new RuntimeException("Data Buku tidak ditemukan"));
+
+        SimpleMap data = new SimpleMap();
+        data.put("id", buku.getId());
+        data.put("judulBuku", buku.getJudulBuku());
+        data.put("penulis", buku.getPenulis());
+        data.put("penerbit", buku.getPenerbit());
+        data.put("tahunTerbit", buku.getTahunTerbit());
+        data.put("jumlahSalinan", buku.getJumlahSalinan());
+        data.put("lokasiRak", buku.getLokasiRak());
+        data.put("namaKategoriBuku", buku.getNamaKategori());
+        data.put("statusBuku", buku.getStatusBuku());
+        return data;
     }
 
     @Override
     public void deleteByIdBuku(String id) {
-
+        var buku = bukuRepository.findById(id).orElseThrow(() -> new RuntimeException("Data Buku tidak ditemukan"));
+        bukuRepository.deleteById(id);
     }
 
     private void validasiMandatory(BukuRequestRecord request) {
