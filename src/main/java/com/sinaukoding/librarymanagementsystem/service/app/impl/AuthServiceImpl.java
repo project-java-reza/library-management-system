@@ -2,7 +2,6 @@ package com.sinaukoding.librarymanagementsystem.service.app.impl;
 
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.Admin;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.Role;
-import com.sinaukoding.librarymanagementsystem.entity.managementuser.User;
 import com.sinaukoding.librarymanagementsystem.mapper.managementuser.AdminMapper;
 import com.sinaukoding.librarymanagementsystem.mapper.managementuser.UserMapper;
 import com.sinaukoding.librarymanagementsystem.model.app.SimpleMap;

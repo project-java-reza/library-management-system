@@ -7,7 +7,6 @@ import com.sinaukoding.librarymanagementsystem.mapper.master.MahasiswaMapper;
 import com.sinaukoding.librarymanagementsystem.model.app.AppPage;
 import com.sinaukoding.librarymanagementsystem.model.app.SimpleMap;
 import com.sinaukoding.librarymanagementsystem.model.filter.MahasiswaFilterRecord;
-import com.sinaukoding.librarymanagementsystem.model.filter.UserFilterRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.MahasiswaRequestRecord;
 import com.sinaukoding.librarymanagementsystem.repository.managementuser.UserRepository;
 import com.sinaukoding.librarymanagementsystem.repository.master.MahasiswaRepository;
@@ -24,7 +23,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

@@ -31,23 +31,4 @@ public class MahasiswaController {
         mahasiswaService.editProfileMahasiswaUser(request);
         return BaseResponse.ok("Data berhasil diubah", null);
     }
-
-
-
-//    @PostMapping("find-all")
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public BaseResponse<?> findAll(@PageableDefault(direction = Sort.Direction.DESC, sort = "modifiedDate") Pageable pageable,
-//                                   @RequestBody UserFilterRecord filterRequest) {
-//        return BaseResponse.ok(null, userService.findAll(filterRequest, pageable));
-//    }
-
-
-//    @DeleteMapping("delete/{id}")
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public BaseResponse<?> deleteById(@PathVariable String id) {
-//        userService.deleteById(id);
-//        return BaseResponse.ok("Delete berhasil", null);
-//
-//    }
-
 }
