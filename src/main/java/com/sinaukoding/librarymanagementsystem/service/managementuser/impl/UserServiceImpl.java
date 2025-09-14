@@ -28,10 +28,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User add(UserRequestRecord request) {
-        // validasi mandatory
         validasiMandatory(request);
 
-        // validasi data existing
         if (userRepository.existsByEmail(request.email().toLowerCase())) {
             throw new RuntimeException("Email [" + request.email() + "] sudah digunakan");
         }
@@ -49,12 +47,10 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User edit(UserRequestRecord request) {
-        // validasi mandatory
         validasiMandatory(request);
 
         var userExisting = userRepository.findById(request.id()).orElseThrow(() ->  new RuntimeException("Data user tidak ditemukan"));
 
-        // validasi data existing
         if (userRepository.existsByEmailAndIdNot(request.email().toLowerCase(), request.id())) {
             throw new RuntimeException("Email [" + request.email() + "] sudah digunakan");
         }

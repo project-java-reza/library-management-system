@@ -43,13 +43,11 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
 
     @Override
     public PeminjamanBuku addPeminjamanBuku(PeminjamanBukuRequestRecord request, String token) {
-        // Membersihkan prefix Bearer
         String prefixBearerToken = token;
         if (prefixBearerToken != null && prefixBearerToken.startsWith("Bearer ")) {
             prefixBearerToken = prefixBearerToken.substring(7);
         }
 
-        // mengambil username dari JWT
         String username = jwtUtil.extractUsername(prefixBearerToken);
         if (username == null || username.isBlank()) {
             throw new BadCredentialsException("Username kosong atau tidak valid.");
@@ -58,13 +56,11 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("Pengguna Dengan " + username + " tidak ditemukan."));
 
-        // validasi mandatory
         validasiMandatory(request);
 
         Buku buku = bukuRepository.findById(request.bukuId())
                 .orElseThrow(() -> new EntityNotFoundException("Data Buku tidak ditemukan"));
 
-        // mengurangi jumlah salinan buku
         buku.setJumlahSalinan(buku.getJumlahSalinan() - 1);
 
         if (buku.getJumlahSalinan() == 0) {

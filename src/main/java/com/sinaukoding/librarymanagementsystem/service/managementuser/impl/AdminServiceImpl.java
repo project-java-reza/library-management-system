@@ -32,10 +32,8 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Admin create(AdminRequestRecord request) {
-        // validasi mandatory
         validasiMandatory(request);
 
-        // validasi data existing
         if (adminRepository.existsByEmail(request.email().toLowerCase())) {
             throw new RuntimeException("Email [" + request.email() + "] sudah digunakan");
         }
@@ -57,12 +55,10 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Admin edit(AdminRequestRecord request) {
-        // validasi mandatory
         validasiMandatory(request);
 
         var adminExisting = adminRepository.findById(request.id()).orElseThrow(() ->  new RuntimeException("Data user tidak ditemukan"));
 
-        // validasi data existing
         if (adminRepository.existsByEmailAndIdNot(request.email().toLowerCase(), request.id())) {
             throw new RuntimeException("Email [" + request.email() + "] sudah digunakan");
         }

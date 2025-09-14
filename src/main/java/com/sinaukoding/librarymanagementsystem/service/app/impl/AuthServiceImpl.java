@@ -74,10 +74,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void registerAdmin(AdminRequestRecord request) {
         try {
-            // validasi mandatory
             validasiMandatory(request);
 
-            // validasi data existing
             if (adminRepository.existsByUsername(request.username().toLowerCase())) {
                 throw new RuntimeException("Username [" + request.username() + "] sudah digunakan");
             }
@@ -97,10 +95,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void registerUser(UserRequestRecord request) {
         try {
-            // validasi mandatory
             validasiMandatory(request);
 
-            // validasi data existing
             if (userRepository.existsByUsername(request.username().toLowerCase())) {
                 throw new RuntimeException("Username [" + request.username() + "] sudah digunakan");
             }

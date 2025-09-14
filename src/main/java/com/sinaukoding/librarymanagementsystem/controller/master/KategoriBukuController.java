@@ -45,7 +45,6 @@ public class KategoriBukuController {
     @GetMapping("/get-all-kategori-buku")
     @PreAuthorize("hasRole('ADMIN')")
     public List<String> getAllKategoriBuku() {
-        // mengambil data enum all kategori
         return Arrays.stream(KategoriBukuEnum.values())
                 .map(KategoriBukuEnum::getLabel)
                 .collect(Collectors.toList());

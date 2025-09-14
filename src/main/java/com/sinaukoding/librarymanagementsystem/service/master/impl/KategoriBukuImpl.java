@@ -36,13 +36,11 @@ public class KategoriBukuImpl implements KategoriBukuService {
 
     @Override
     public KategoriBuku addKategoriBuku(KategoriBukuRequestRecord request, String token) {
-        // Membersihkan prefix Bearer
         String prefixBearerToken = token;
         if (prefixBearerToken != null && prefixBearerToken.startsWith("Bearer ")) {
             prefixBearerToken = prefixBearerToken.substring(7);
         }
 
-        // mengambil username dari JWT
         String username = jwtUtil.extractUsername(prefixBearerToken);
         if (username == null || username.isBlank()) {
             throw new BadCredentialsException("Username kosong atau tidak valid.");
@@ -64,13 +62,11 @@ public class KategoriBukuImpl implements KategoriBukuService {
 
     @Override
     public KategoriBuku editKategoriBuku(KategoriBukuRequestRecord request, String token) {
-        // Membersihkan prefix Bearer
         String prefixBearerToken = token;
         if (prefixBearerToken != null && prefixBearerToken.startsWith("Bearer ")) {
             prefixBearerToken = prefixBearerToken.substring(7);
         }
 
-        // mengambil username dari JWT
         String username = jwtUtil.extractUsername(prefixBearerToken);
         if (username == null || username.isBlank()) {
             throw new BadCredentialsException("Username kosong atau tidak valid.");
@@ -79,10 +75,8 @@ public class KategoriBukuImpl implements KategoriBukuService {
         Admin admin = adminRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("Pengguna dengan " + username + " tidak ditemukan."));
 
-        // validasi mandatory
         validasiMandatory(request);
 
-        // validasi data existing
         if(kategoriBukuRepository.existsByNamaKategoriBuku(request.namaKategoriBuku())) {
             throw new RuntimeException("Nama Kategori Buku [" + request.namaKategoriBuku() + "] sudah digunakan");
         }

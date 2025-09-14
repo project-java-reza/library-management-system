@@ -61,8 +61,6 @@ public class Buku extends BaseEntity {
     @Column(name = "nama_kategori", nullable = false)
     private String namaKategori;
 
-    // Banyak buku bisa memiliki satu status
-    // relasi ke tabel m_status_buku
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "status_buku_tersedia")
     private StatusBuku statusBukuTersedia;

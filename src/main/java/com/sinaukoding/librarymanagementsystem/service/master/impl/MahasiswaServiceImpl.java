@@ -38,13 +38,11 @@ public class MahasiswaServiceImpl implements MahasiswaService {
     @Override
     public Mahasiswa addProfileMahasiswaUser(MahasiswaRequestRecord request, String token) {
 
-        // Membersihkan prefix Bearer
         String prefixBearerToken = token;
         if (prefixBearerToken != null && prefixBearerToken.startsWith("Bearer ")) {
             prefixBearerToken = prefixBearerToken.substring(7);
         }
 
-        // mengambil username dari JWT
         String username = jwtUtil.extractUsername(prefixBearerToken);
         if (username == null || username.isBlank()) {
             throw new BadCredentialsException("Username kosong atau tidak valid.");
@@ -74,13 +72,11 @@ public class MahasiswaServiceImpl implements MahasiswaService {
 
     @Override
     public Mahasiswa editProfileMahasiswaUser(MahasiswaRequestRecord request, String token) {
-        // Membersihkan prefix Bearer
         String prefixBearerToken = token;
         if (prefixBearerToken != null && prefixBearerToken.startsWith("Bearer ")) {
             prefixBearerToken = prefixBearerToken.substring(7);
         }
 
-        // mengambil username dari JWT
         String username = jwtUtil.extractUsername(prefixBearerToken);
         if (username == null || username.isBlank()) {
             throw new BadCredentialsException("Username kosong atau tidak valid.");
@@ -89,10 +85,8 @@ public class MahasiswaServiceImpl implements MahasiswaService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("Pengguna dengan " + username + " tidak ditemukan."));
 
-        // validasi mandatory
         validasiMandatory(request);
 
-        // validasi data existing
         if (mahasiswaRepository.existsByPhoneNumber(request.phoneNumber())) {
             throw new RuntimeException("Nomor HP [" + request.phoneNumber() + "] sudah digunakan");
         }

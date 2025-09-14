@@ -10,7 +10,6 @@ public class AdminMapper {
 
     private final RoleService roleService;
 
-    // Inject ROLE_ADMIN untuk mendapatkan role admin
     public AdminMapper(RoleService roleService) {
         this.roleService = roleService;
     }
