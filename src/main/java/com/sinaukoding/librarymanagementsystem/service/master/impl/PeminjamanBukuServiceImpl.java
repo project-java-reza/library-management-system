@@ -1,10 +1,12 @@
 package com.sinaukoding.librarymanagementsystem.service.master.impl;
 
+import com.sinaukoding.librarymanagementsystem.builder.CustomBuilder;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.StatusBuku;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.User;
 import com.sinaukoding.librarymanagementsystem.entity.master.Buku;
 import com.sinaukoding.librarymanagementsystem.entity.master.PeminjamanBuku;
 import com.sinaukoding.librarymanagementsystem.mapper.master.PeminjamanBukuMapper;
+import com.sinaukoding.librarymanagementsystem.model.app.AppPage;
 import com.sinaukoding.librarymanagementsystem.model.app.SimpleMap;
 import com.sinaukoding.librarymanagementsystem.model.enums.EStatusBuku;
 import com.sinaukoding.librarymanagementsystem.model.filter.PeminjamanBukuFilterRecord;
@@ -14,6 +16,7 @@ import com.sinaukoding.librarymanagementsystem.repository.managementuser.UserRep
 import com.sinaukoding.librarymanagementsystem.repository.master.BukuRepository;
 import com.sinaukoding.librarymanagementsystem.repository.master.PeminjamanBukuRepository;
 import com.sinaukoding.librarymanagementsystem.service.master.PeminjamanBukuService;
+import com.sinaukoding.librarymanagementsystem.util.FilterUtil;
 import com.sinaukoding.librarymanagementsystem.util.JwtUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -117,17 +122,44 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
 
     @Override
     public Page<SimpleMap> findAllPeminjamanBuku(PeminjamanBukuFilterRecord filterRequest, Pageable pageable) {
-        return null;
+        CustomBuilder<PeminjamanBuku> builder = new CustomBuilder<>();
+        FilterUtil.builderConditionNotNullEqual("tanggalPinjam", filterRequest.tanggalPinjam(), builder);
+        FilterUtil.builderConditionNotNullEqual("tanggalKembali", filterRequest.tanggalKembali(), builder);
+        FilterUtil.builderConditionNotNullEqual("statusBukuPinjaman", filterRequest.statusBukuPinjaman(), builder);
+
+        Page<PeminjamanBuku> listPeminjamanBuku = peminjamanBukuRepository.findAll(builder.build(), pageable);
+        List<SimpleMap> listData = listPeminjamanBuku.stream().map(buku -> {
+            SimpleMap data = new SimpleMap();
+            data.put("id", buku.getId());
+            data.put("judulBuku", buku.getBuku().getJudulBuku());
+            data.put("namaKategori", buku.getBuku().getNamaKategori());
+            data.put("lokasiRak", buku.getBuku().getLokasiRak());
+            data.put("nama", buku.getUser().getNama());
+            data.put("tanggalPinjam", buku.getTanggalPinjam());
+            data.put("tanggalKembali", buku.getTanggalKembali());
+            data.put("statusBukuPinjaman", buku.getStatusBukuPinjaman());
+            return data;
+        }).toList();
+        return AppPage.create(listData, pageable, listPeminjamanBuku.getTotalElements());
     }
 
     @Override
     public SimpleMap findByIdPeminjamanMahasiswa(String id) {
-        return null;
+        var user = userRepository.findById(id).orElseThrow(()-> new RuntimeException("Data user tidak ditemukan"));
+
+        SimpleMap data = new SimpleMap();
+        data.put("id", user.getId());
+        data.put("nama", user.getNama());
+        data.put("username", user.getUsername());
+        data.put("email", user.getEmail());
+        data.put("status", user.getStatus().getLabel());
+        return data;
     }
 
     @Override
     public void deleteByIdPeminjamanMahasiswaSelesai(String id) {
-
+        var peminjamanMahasiswa = peminjamanBukuRepository.findById(id).orElseThrow(() -> new RuntimeException("User tidak ditemukan"));
+        peminjamanBukuRepository.deleteById(id);
     }
 
     private void validasiMandatory(PeminjamanBukuRequestRecord request) {
