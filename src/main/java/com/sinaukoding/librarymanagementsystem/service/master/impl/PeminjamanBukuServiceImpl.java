@@ -1,6 +1,7 @@
 package com.sinaukoding.librarymanagementsystem.service.master.impl;
 
 import com.sinaukoding.librarymanagementsystem.builder.CustomBuilder;
+import com.sinaukoding.librarymanagementsystem.entity.managementuser.Admin;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.StatusBuku;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.User;
 import com.sinaukoding.librarymanagementsystem.entity.master.Buku;
@@ -11,6 +12,7 @@ import com.sinaukoding.librarymanagementsystem.model.app.SimpleMap;
 import com.sinaukoding.librarymanagementsystem.model.enums.EStatusBuku;
 import com.sinaukoding.librarymanagementsystem.model.filter.PeminjamanBukuFilterRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.PeminjamanBukuRequestRecord;
+import com.sinaukoding.librarymanagementsystem.repository.managementuser.AdminRepository;
 import com.sinaukoding.librarymanagementsystem.repository.managementuser.StatusBukuRepository;
 import com.sinaukoding.librarymanagementsystem.repository.managementuser.UserRepository;
 import com.sinaukoding.librarymanagementsystem.repository.master.BukuRepository;
@@ -33,6 +35,7 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
 
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
+    private final AdminRepository adminRepository;
     private final PeminjamanBukuRepository peminjamanBukuRepository;
     private final BukuRepository bukuRepository;
     private final PeminjamanBukuMapper peminjamanBukuMapper;
@@ -106,13 +109,17 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
             throw new BadCredentialsException("Username kosong atau tidak valid.");
         }
 
+        Admin admin = adminRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("Pengguna Dengan " + username + " tidak ditemukan."));
+
+
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("Pengguna Dengan " + username + " tidak ditemukan."));
 
         // validasi mandatory
         validasiMandatory(request);
 
-        PeminjamanBuku peminjamanBuku = peminjamanBukuRepository.findByUser(user)
+        PeminjamanBuku peminjamanBuku = peminjamanBukuRepository.findById(request.bukuId())
                 .orElseThrow(()-> new EntityNotFoundException("Data Peminjaman Buku tidak ditemukan"));
 
         peminjamanBuku.setStatusBukuPinjaman(request.statusBukuPinjaman());

@@ -1,6 +1,7 @@
 package com.sinaukoding.librarymanagementsystem.entity.master;
 
 import com.sinaukoding.librarymanagementsystem.entity.app.BaseEntity;
+import com.sinaukoding.librarymanagementsystem.entity.managementuser.Admin;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.User;
 import com.sinaukoding.librarymanagementsystem.model.enums.StatusBukuPinjaman;
 import jakarta.persistence.*;
@@ -32,6 +33,10 @@ public class PeminjamanBuku extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "admin_id", nullable = true)
+    private Admin admin;
 
     @ManyToOne
     @JoinColumn(name = "buku_id", nullable = false)

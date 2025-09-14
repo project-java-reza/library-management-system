@@ -4,7 +4,8 @@ import com.sinaukoding.librarymanagementsystem.model.enums.StatusBukuPinjaman;
 
 import java.time.LocalDate;
 
-public record PeminjamanBukuRequestRecord(String bukuId,
+public record PeminjamanBukuRequestRecord(String userId,
+                                          String bukuId,
                                           LocalDate tanggalPinjam,
                                           LocalDate tanggalKembali,
                                           StatusBukuPinjaman statusBukuPinjaman){

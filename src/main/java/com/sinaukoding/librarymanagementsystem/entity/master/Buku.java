@@ -54,7 +54,7 @@ public class Buku extends BaseEntity {
     @JoinColumn(name = "kategori_buku_id", nullable = false)
     private KategoriBuku kategoriBukuId;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "admin_id")
     private Admin admin;
 
