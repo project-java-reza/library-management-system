@@ -21,14 +21,6 @@ public class PeminjamanBukuControllerAdmin {
     private final PeminjamanBukuService peminjamanBukuService;
     private final JwtAuthenticationConfig jwtAuthenticationConfig;
 
-    @PostMapping("/peminjaman-buku/edit")
-    @PreAuthorize("hasRole('ADMIN')")
-    public BaseResponse<?> edit(@RequestBody PeminjamanBukuRequestRecord request, HttpServletRequest httpServletRequest) {
-        String jwtToken = jwtAuthenticationConfig.parseJwt(httpServletRequest);
-        peminjamanBukuService.editPeminjamanStatusBuku(request, jwtToken);
-        return BaseResponse.ok("Data Peminjaman Buku berhasil diubah", null);
-    }
-
     @PostMapping("/peminjaman-buku/find-all")
     @PreAuthorize("hasRole('ADMIN')")
     public BaseResponse<?> findAllAdmin(@PageableDefault(direction = Sort.Direction.DESC, sort = "modifiedDate") Pageable pageable,
