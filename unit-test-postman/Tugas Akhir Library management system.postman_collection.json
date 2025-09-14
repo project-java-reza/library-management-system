@@ -1,0 +1,1116 @@
+{
+	"info": {
+		"_postman_id": "aace059c-edaf-40eb-ac39-6ca899fb9a48",
+		"name": "Tugas Akhir Library management system",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17794604"
+	},
+	"item": [
+		{
+			"name": "Tugas Akhir LMS",
+			"item": [
+				{
+					"name": "Admin",
+					"item": [
+						{
+							"name": "Authentication",
+							"item": [
+								{
+									"name": "Register Admin",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"nama\" :\"ardiansyah\",\r\n  \"username\":\"rizqi\",\r\n  \"email\":\"rezajava@gmail.com\",\r\n  \"password\":\"supersecret\",\r\n  \"status\":\"AKTIF\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/auth/register/admin",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"auth",
+												"register",
+												"admin"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Login Admin",
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"username\" :\"rizqi\",\r\n    \"password\":\"supersecret\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/auth/login/admin",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"auth",
+												"login",
+												"admin"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get All User",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyaXpxaSIsImlhdCI6MTc1Nzc0OTM5MCwiZXhwIjoxNzU3NzUyOTkwfQ.uUFzTHfKfL2gcF8gQpxlaNR6oTkz1VVSmhIiJRg_E68",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"status\": \"AKTIF\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/admin/user/find-all",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"admin",
+												"user",
+												"find-all"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get All Admin",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyaXpxaSIsImlhdCI6MTc1Nzc0ODQwOSwiZXhwIjoxNzU3NzUyMDA5fQ.FtPDMR4pzWVEk_Ut7kNWu0E5Q1rPUf69thb7iYcXO2U",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"status\": \"AKTIF\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/admin/find-all",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"admin",
+												"find-all"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get By Id Admin",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyaXpxaSIsImlhdCI6MTc1Nzc0ODA3OSwiZXhwIjoxNzU3NzUxNjc5fQ.CNlmh9VgFsjWWLqK22OoVg4vv-qOhWD3YY4RdquL8dg",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/admin/find-by-id/23ac7a22-55ae-4777-9edf-2970fa65f116",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"admin",
+												"find-by-id",
+												"23ac7a22-55ae-4777-9edf-2970fa65f116"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get By Id User",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyaXpxaSIsImlhdCI6MTc1NzY4MDcwMiwiZXhwIjoxNzU3Njg0MzAyfQ.A0NXbpwh0n35lnWciwczWbGdm7EHJEjwmKf1D4rLU2E",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/user/find-by-id/2b5855e6-1380-49d1-89d9-ebc45eafd706",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"user",
+												"find-by-id",
+												"2b5855e6-1380-49d1-89d9-ebc45eafd706"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete User",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyaXpxaSIsImlhdCI6MTc1NzYwMDYwNiwiZXhwIjoxNzU3NjA0MjA2fQ.ZkiJe-nR4Cvknw00vWeB7KmSSzoRiurKhOuzj6hHojI",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/user/delete/808dcb6b-eb84-4867-8eeb-000b5f7a9134",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"user",
+												"delete",
+												"808dcb6b-eb84-4867-8eeb-000b5f7a9134"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete Admin",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyaXpxaSIsImlhdCI6MTc1NzYwMDYwNiwiZXhwIjoxNzU3NjA0MjA2fQ.ZkiJe-nR4Cvknw00vWeB7KmSSzoRiurKhOuzj6hHojI",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/admin/delete/808dcb6b-eb84-4867-8eeb-000b5f7a9134",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"admin",
+												"delete",
+												"808dcb6b-eb84-4867-8eeb-000b5f7a9134"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Profile Mahasiswa",
+							"item": [
+								{
+									"name": "Get Profile Mahasiswa By Id",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyaXpxaSIsImlhdCI6MTc1NzcyMzQyMywiZXhwIjoxNzU3NzI3MDIzfQ.rDkhjpI1DHchom3ai4zOFcWlb5gFhxfm0lz_IY4uQ1U",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/admin/mahasiswa/find-by-id/a5dbe5ae-ef9c-4996-8cfc-efb31f015dce",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"admin",
+												"mahasiswa",
+												"find-by-id",
+												"a5dbe5ae-ef9c-4996-8cfc-efb31f015dce"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get All Profile Mahasiswa",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyaXpxaSIsImlhdCI6MTc1NzcyMzYyMCwiZXhwIjoxNzU3NzI3MjIwfQ.nyoSYVYrCEi3OXq0iO-WaYmTVJHFcGQ-rEKYN3xF-jE",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"nim\": \"12191843\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/admin/mahasiswa/find-all",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"admin",
+												"mahasiswa",
+												"find-all"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete Mahasiswa",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyaXpxaSIsImlhdCI6MTc1NzYwMDYwNiwiZXhwIjoxNzU3NjA0MjA2fQ.ZkiJe-nR4Cvknw00vWeB7KmSSzoRiurKhOuzj6hHojI",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/admin/mahasiswa/delete/808dcb6b-eb84-4867-8eeb-000b5f7a9134",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"admin",
+												"mahasiswa",
+												"delete",
+												"808dcb6b-eb84-4867-8eeb-000b5f7a9134"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Kategori Buku",
+							"item": [
+								{
+									"name": "Add New Kategori Buku",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyaXpxaSIsImlhdCI6MTc1Nzc2NDc0MywiZXhwIjoxNzU3NzY4MzQzfQ.Hic5OFgR40WIGPYLH6BqV6jVVS33hhouQsKOdYveGls",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"namaKategoriBuku\": \"FIKSI\",\n    \"deskripsiKategori\": \"Buku ini berisi fiksi\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/admin/kategori-buku/save",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"admin",
+												"kategori-buku",
+												"save"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get All Kategori Buku",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyaXpxaSIsImlhdCI6MTc1Nzc2NjI3NCwiZXhwIjoxNzU3NzY5ODc0fQ.1bEX8rKThiKmr0vuQlvjXY-R09XR8wtHqCFvvYW2f10",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"namaKategoriBuku\": \"FIKSI\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/admin/kategori-buku/find-all",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"admin",
+												"kategori-buku",
+												"find-all"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get Kategori Buku By Id",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyaXpxaSIsImlhdCI6MTc1Nzc2NTk2OCwiZXhwIjoxNzU3NzY5NTY4fQ.OJU8HJBSlTzcVDfPQHPfqF_HMIAMuQKDZapCq0Ubz3g",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/admin/kategori-buku/find-by-id/",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"admin",
+												"kategori-buku",
+												"find-by-id",
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update Kategori Buku",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \n    \"namaKategoriBuku\": \"FIKSI\",\n    \"deskripsiKategori\": \"Buku ini berisi fiksi\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/admin/kategori-buku/edit",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"admin",
+												"kategori-buku",
+												"edit"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Hapus Kategori Buku",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/admin/kategori-buku/delete/",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"admin",
+												"kategori-buku",
+												"delete",
+												""
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Buku",
+							"item": [
+								{
+									"name": "Add New Book",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyaXpxaSIsImlhdCI6MTc1Nzc0NjU0NiwiZXhwIjoxNzU3NzUwMTQ2fQ.UfR74w0umdiLFPpQcg4qp3K6BFFJ-x6WPiDP-fpUU7E",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"judulBuku\": \"Indahnya\",\n    \"penulis\": \"Reza\",\n    \"penerbit\": \"Gramedia\",\n    \"tahunTerbit\": 2015,\n    \"jumlahSalinan\": 20,\n    \"lokasiRak\": \"A-20\",\n    \"kategoriBukuId\": \"aa7faabb-58b0-4fa4-9da1-966093974126\",\n    \"statusBuku\": \"TERSEDIA\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/admin/buku/save",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"admin",
+												"buku",
+												"save"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get All Books",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyaXpxaSIsImlhdCI6MTc1Nzc2MTA5MiwiZXhwIjoxNzU3NzY0NjkyfQ.ogaHvGIrtiR_1o5xv2VYCOOZpnHsnQG4otr55xrFBoY",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"statusBuku\": \"TERSEDIA\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/admin/buku/find-all",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"admin",
+												"buku",
+												"find-all"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get Buku By Id",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyaXpxaSIsImlhdCI6MTc1Nzc2MDczNywiZXhwIjoxNzU3NzY0MzM3fQ.5y1Rg4dowAeP5JK2quWZMOWlIa6t63IAdHXsyUBY9pw",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/admin/buku/find-by-id/b1890ef1-f467-44fc-b193-e68d447f55cc",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"admin",
+												"buku",
+												"find-by-id",
+												"b1890ef1-f467-44fc-b193-e68d447f55cc"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Add Status Buku Tidak Tersedia",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyaXpxaSIsImlhdCI6MTc1Nzc4NDI4NiwiZXhwIjoxNzU3Nzg3ODg2fQ.ocUuEKh5TlUGlFaxfsUe_-S1miEVqeDD7lXdP5uhCfM",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"statusBuku\": \"TIDAK_TERSEDIA\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/admin/status-buku/save",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"admin",
+												"status-buku",
+												"save"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update Buku",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyaXpxaSIsImlhdCI6MTc1Nzc2MTA5MiwiZXhwIjoxNzU3NzY0NjkyfQ.ogaHvGIrtiR_1o5xv2VYCOOZpnHsnQG4otr55xrFBoY",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"jumlahSalinan\": 20,\n    \"lokasiRak\": \"A-21111\",\n    \"kategoriBukuId\": \"fe58450c-65cb-4f7f-906d-f10ac0bdc9e4\",\n    \"statusBuku\": \"DIPINJAM\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/admin/buku/edit",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"admin",
+												"buku",
+												"edit"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Hapus Buku",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyaXpxaSIsImlhdCI6MTc1Nzc2NDc0MywiZXhwIjoxNzU3NzY4MzQzfQ.Hic5OFgR40WIGPYLH6BqV6jVVS33hhouQsKOdYveGls",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/admin/buku/delete/d83a185e-36be-494e-acaf-c69be5d45921",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"admin",
+												"buku",
+												"delete",
+												"d83a185e-36be-494e-acaf-c69be5d45921"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get All Referensi Kategori Buku",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyaXpxaSIsImlhdCI6MTc1Nzc2Nzc5NCwiZXhwIjoxNzU3NzcxMzk0fQ.zWy9cFtJ1DCqocbZelc89obeWXlAoJ9S9YdKhj7Oq6Y",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/admin/get-all-kategori-buku",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"admin",
+												"get-all-kategori-buku"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Peminjaman Buku",
+							"item": [
+								{
+									"name": "Get All Peminjaman Buku",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyaXpxaSIsImlhdCI6MTc1NzgxODI0MywiZXhwIjoxNzU3ODIxODQzfQ.A1p8Q3BnuAud5osfdQvPvuj4mhXqpYE3PRrtVR5jAWU",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"statusBuku\": \"DIPINJAM\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/admin/peminjaman-buku/find-all",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"admin",
+												"peminjaman-buku",
+												"find-all"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get By Id Peminjam",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyaXpxaSIsImlhdCI6MTc1Nzc4NzkyNiwiZXhwIjoxNzU3NzkxNTI2fQ.rFoWIby5GvJ3Cr1SKcF0YlXlRQ4HwpUElre034v4Bn0",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"statusBuku\": \"TERSEDIA\"\n}"
+										},
+										"url": {
+											"raw": "http://localhost:8080/admin/peminjaman-buku/find-by-id/11108540-3671-4af0-ac3f-f03aeefd89c4",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"admin",
+												"peminjaman-buku",
+												"find-by-id",
+												"11108540-3671-4af0-ac3f-f03aeefd89c4"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "User",
+					"item": [
+						{
+							"name": "Authentication",
+							"item": [
+								{
+									"name": "Register User",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"nama\" : \"Adam\",\n  \"username\": \"kocak\",\n  \"email\": \"adminjava@gmail.com\",\n  \"password\": \"jamal\",\n  \"status\": \"AKTIF\",\n  \"role\": \"ANGGOTA\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/auth/register/user",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"auth",
+												"register",
+												"user"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Login User",
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"username\" : \"kocak\",\r\n    \"password\": \"jamal\"\r\n}\r\n\r\n",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/auth/login/user",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"auth",
+												"login",
+												"user"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Profile Mahasiswa",
+							"item": [
+								{
+									"name": "Add Profile Mahasiswa",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJrb2NhayIsImlhdCI6MTc1NzY0MjcxNCwiZXhwIjoxNzU3NjQ2MzE0fQ.IcMK7WYJepPATAW4J5-qOcBs-fI_2YP3eBghnbTHCW0",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"nim\": \"12191843\",\n    \"jurusan\": \"sistem informasi\",\n    \"alamat\": \"Villa balaraja blok L3 No.06 RT/RW 001/006\",\n    \"phoneNumber\": \"08515682323\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/user/mahasiswa/save",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"user",
+												"mahasiswa",
+												"save"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Edit Profile Mahasiswa",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJrb2NhayIsImlhdCI6MTc1Nzc1NjIzOSwiZXhwIjoxNzU3NzU5ODM5fQ.fe-k2Avdz6apSju7u875UtrY2NlMe6tuoBTQBrFrk6Y",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"nama\": \"reza\",\n    \"nim\": \"12191843\",\n    \"jurusan\": \"Teknik Informatika\",\n    \"alamat\": \"Jalan Raya Serang\",\n    \"phoneNumber\": \"085156811979\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/user/mahasiswa/edit",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"user",
+												"mahasiswa",
+												"edit"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Peminjaman Buku",
+							"item": [
+								{
+									"name": "Add Peminjaman Buku",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJrb2NhayIsImlhdCI6MTc1NzgzMDE2MywiZXhwIjoxNzU3ODMzNzYzfQ.DKrgplDdM_SoK_9L9XL7m5pRPNHs1OOwrXZO5WIV3Y0",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"bukuId\": \"cd2c93f8-1442-4d0e-8f6d-8b5e5ff680f2\",\n    \"tanggalPinjam\": \"2024-10-31\",\n    \"tanggalKembali\": \"2024-11-10\",\n    \"statusBukuPinjaman\": \"DIPINJAM\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/user/peminjaman/buku/save",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"user",
+												"peminjaman",
+												"buku",
+												"save"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}
