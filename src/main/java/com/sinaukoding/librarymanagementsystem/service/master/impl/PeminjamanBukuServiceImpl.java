@@ -64,11 +64,6 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
         Buku buku = bukuRepository.findById(request.bukuId())
                 .orElseThrow(() -> new EntityNotFoundException("Data Buku tidak ditemukan"));
 
-        // mengecek ketersediaan buku
-        if (buku.getJumlahSalinan() <= 0) {
-            throw new RuntimeException("Buku tidak tersedia, jumlah salinan buku habis.");
-        }
-
         // mengurangi jumlah salinan buku
         buku.setJumlahSalinan(buku.getJumlahSalinan() - 1);
 
