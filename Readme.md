@@ -1,4 +1,4 @@
-# Flowchart Learning Management System (LMS) Perpustakaan Kampus Swasta
+# Flowchart Library Management System (LMS) Perpustakaan Kampus Swasta
 ### Login 
 <a href="https://ibb.co.com/7JK6JhZg"><img src="https://i.ibb.co.com/RpcVp8sh/Tugas-Akhir-LMS-SINAU-KODING-LOGIN-drawio.png" alt="Tugas-Akhir-LMS-SINAU-KODING-LOGIN-drawio" border="0"></a>
 
