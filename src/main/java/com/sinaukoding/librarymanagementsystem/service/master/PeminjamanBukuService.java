@@ -10,8 +10,6 @@ import org.springframework.data.domain.Pageable;
 public interface PeminjamanBukuService {
     PeminjamanBuku addPeminjamanBuku(PeminjamanBukuRequestRecord request, String token);
 
-    PeminjamanBuku editPeminjamanStatusBuku(PeminjamanBukuRequestRecord request, String token);
-
     Page<SimpleMap> findAllPeminjamanBuku(PeminjamanBukuFilterRecord filterRequest, Pageable pageable);
 
     SimpleMap findByIdPeminjamanMahasiswa(String id);

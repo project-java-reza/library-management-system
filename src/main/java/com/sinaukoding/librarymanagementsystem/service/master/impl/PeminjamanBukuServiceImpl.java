@@ -96,38 +96,6 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
     }
 
     @Override
-    public PeminjamanBuku editPeminjamanStatusBuku(PeminjamanBukuRequestRecord request, String token) {
-        // Membersihkan prefix Bearer
-        String prefixBearerToken = token;
-        if (prefixBearerToken != null && prefixBearerToken.startsWith("Bearer ")) {
-            prefixBearerToken = prefixBearerToken.substring(7);
-        }
-
-        // mengambil username dari JWT
-        String username = jwtUtil.extractUsername(prefixBearerToken);
-        if (username == null || username.isBlank()) {
-            throw new BadCredentialsException("Username kosong atau tidak valid.");
-        }
-
-        Admin admin = adminRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("Pengguna Dengan " + username + " tidak ditemukan."));
-
-
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("Pengguna Dengan " + username + " tidak ditemukan."));
-
-        // validasi mandatory
-        validasiMandatory(request);
-
-        PeminjamanBuku peminjamanBuku = peminjamanBukuRepository.findById(request.bukuId())
-                .orElseThrow(()-> new EntityNotFoundException("Data Peminjaman Buku tidak ditemukan"));
-
-        peminjamanBuku.setStatusBukuPinjaman(request.statusBukuPinjaman());
-        peminjamanBukuRepository.save(peminjamanBuku);
-        return peminjamanBuku;
-    }
-
-    @Override
     public Page<SimpleMap> findAllPeminjamanBuku(PeminjamanBukuFilterRecord filterRequest, Pageable pageable) {
         CustomBuilder<PeminjamanBuku> builder = new CustomBuilder<>();
         FilterUtil.builderConditionNotNullEqual("tanggalPinjam", filterRequest.tanggalPinjam(), builder);
