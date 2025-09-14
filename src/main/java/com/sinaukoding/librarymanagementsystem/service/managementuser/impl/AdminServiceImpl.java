@@ -73,6 +73,9 @@ public class AdminServiceImpl implements AdminService {
         var admin = adminMapper.requestToEntity(request);
         admin.setId(adminExisting.getId());
         admin.setPassword(passwordEncoder.encode(request.password()));
+        admin.setNama(request.nama());
+        admin.setUsername(request.username());
+        admin.setEmail(request.email());
         adminRepository.save(admin);
         return admin;
     }

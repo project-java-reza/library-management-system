@@ -40,7 +40,9 @@ public class UserServiceImpl implements UserService{
         }
 
         var user = userMapper.requestToEntity(request);
+        user.setUsername(request.username());
         user.setPassword(passwordEncoder.encode(request.password()));
+        user.setEmail(request.email());
         userRepository.save(user);
         return user;
     }
@@ -63,6 +65,7 @@ public class UserServiceImpl implements UserService{
         var user = userMapper.requestToEntity(request);
         user.setId(userExisting.getId());
         user.setPassword(passwordEncoder.encode(request.password()));
+        user.setUsername(request.username());
         userRepository.save(user);
         return user;
     }
