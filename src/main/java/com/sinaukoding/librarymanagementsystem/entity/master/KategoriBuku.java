@@ -31,7 +31,7 @@ public class KategoriBuku extends BaseEntity {
     @Column(name = "deskripsi_kategori", length = 255)
     private String deskripsiKategori;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "admin_id")
     private Admin admin;
 

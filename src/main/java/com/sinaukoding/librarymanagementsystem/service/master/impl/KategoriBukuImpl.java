@@ -54,7 +54,7 @@ public class KategoriBukuImpl implements KategoriBukuService {
         KategoriBuku kategoriBuku = kategoriBukuMapper.requestToEntity(request);
         kategoriBuku.setNamaKategoriBuku(request.namaKategoriBuku());
         kategoriBuku.setDeskripsiKategori(request.deskripsiKategori());
-
+        kategoriBuku.setAdmin(admin);
         validasiMandatory(request);
 
         KategoriBuku simpanKategoriBuku = kategoriBukuRepository.save(kategoriBuku);
@@ -91,6 +91,7 @@ public class KategoriBukuImpl implements KategoriBukuService {
 
         kategoriBuku.setNamaKategoriBuku(request.namaKategoriBuku());
         kategoriBuku.setDeskripsiKategori(request.deskripsiKategori());
+        kategoriBuku.setAdmin(admin);
         kategoriBukuRepository.save(kategoriBuku);
         return kategoriBuku;
     }
