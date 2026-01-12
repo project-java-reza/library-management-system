@@ -1,0 +1,6 @@
+{
+  "status": 401,
+  "success": false,
+  "message": "Unauthorized access, please login first",
+  "data": null
+}

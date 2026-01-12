@@ -1,0 +1,8 @@
+com/sinaukoding/librarymanagementsystem/service/master/BukuServiceTest.class
+com/sinaukoding/librarymanagementsystem/service/master/PeminjamanBukuServiceTest.class
+com/sinaukoding/librarymanagementsystem/service/managementuser/AdminServiceTest.class
+com/sinaukoding/librarymanagementsystem/helper/LokasiRakHelperTest.class
+com/sinaukoding/librarymanagementsystem/service/master/MahasiswaServiceTest.class
+com/sinaukoding/librarymanagementsystem/MainAppTests.class
+com/sinaukoding/librarymanagementsystem/service/master/KategoriBukuServiceTest.class
+com/sinaukoding/librarymanagementsystem/service/managementuser/UserServiceTest.class
