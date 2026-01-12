@@ -30,5 +30,5 @@ bin/
 test_admin_register.sh
 test_logout.sh
 summary.md
-Readme.md
+FLOWCHART.md
 unit-test-postman
