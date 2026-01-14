@@ -26,17 +26,9 @@ public class JwtAuthenticationConfig extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-        System.out.println("\n======== JWT Filter START ========");
-        System.out.println("Request URI: " + request.getRequestURI());
-        System.out.println("Request Method: " + request.getMethod());
-
         final String authHeader = request.getHeader("Authorization");
         String username = null;
         String jwt = null;
-
-        // Debug: Log request URI and auth header presence
-        System.out.println("Auth Header Present: " + (authHeader != null));
-        System.out.println("Auth Header Value: " + (authHeader != null && authHeader.length() > 20 ? authHeader.substring(0, 20) + "..." : authHeader));
 
         if (authHeader != null) {
             if (authHeader.startsWith("Bearer ")) {
@@ -58,8 +50,6 @@ public class JwtAuthenticationConfig extends OncePerRequestFilter {
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             try {
                 UserDetails userDetails = this.userService.loadUserByUsername(username);
-                System.out.println("UserDetails loaded successfully for: " + username);
-                System.out.println("User authorities: " + userDetails.getAuthorities());
 
                 if (jwtUtil.validateToken(jwt)) {
                     System.out.println("JWT Token validated successfully");
@@ -79,10 +69,7 @@ public class JwtAuthenticationConfig extends OncePerRequestFilter {
                 e.printStackTrace();
             }
         }
-
-        System.out.println("================================\n");
         filterChain.doFilter(request, response);
-        System.out.println("======== JWT Filter END ========\n");
     }
 
     public String parseJwt(HttpServletRequest request) {

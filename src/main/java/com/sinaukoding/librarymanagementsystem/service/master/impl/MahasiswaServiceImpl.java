@@ -12,6 +12,7 @@ import com.sinaukoding.librarymanagementsystem.model.enums.Status;
 import com.sinaukoding.librarymanagementsystem.model.filter.MahasiswaFilterRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.CreateMahasiswaRequestRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.MahasiswaProfileRequestRecord;
+import com.sinaukoding.librarymanagementsystem.model.request.SearchMahasiswaRequestRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.UpdateMahasiswaRequestRecord;
 import com.sinaukoding.librarymanagementsystem.repository.managementuser.UserRepository;
 import com.sinaukoding.librarymanagementsystem.repository.master.MahasiswaRepository;
@@ -46,18 +47,7 @@ public class MahasiswaServiceImpl implements MahasiswaService {
     private final RoleService roleService;
 
     @Override
-    public Mahasiswa addProfileMahasiswaUser(MahasiswaProfileRequestRecord request, String token) {
-
-        String prefixBearerToken = token;
-        if (prefixBearerToken != null && prefixBearerToken.startsWith("Bearer ")) {
-            prefixBearerToken = prefixBearerToken.substring(7);
-        }
-
-        String username = jwtUtil.extractUsername(prefixBearerToken);
-        if (username == null || username.isBlank()) {
-            throw new BadCredentialsException("Username kosong atau tidak valid.");
-        }
-
+    public Mahasiswa addProfileMahasiswaUser(MahasiswaProfileRequestRecord request, String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("Pengguna dengan " + username + " tidak ditemukan."));
 
@@ -81,17 +71,7 @@ public class MahasiswaServiceImpl implements MahasiswaService {
     }
 
     @Override
-    public Mahasiswa editProfileMahasiswaUser(MahasiswaProfileRequestRecord request, String token) {
-        String prefixBearerToken = token;
-        if (prefixBearerToken != null && prefixBearerToken.startsWith("Bearer ")) {
-            prefixBearerToken = prefixBearerToken.substring(7);
-        }
-
-        String username = jwtUtil.extractUsername(prefixBearerToken);
-        if (username == null || username.isBlank()) {
-            throw new BadCredentialsException("Username kosong atau tidak valid.");
-        }
-
+    public Mahasiswa editProfileMahasiswaUser(MahasiswaProfileRequestRecord request, String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("Pengguna dengan " + username + " tidak ditemukan."));
 
@@ -454,6 +434,33 @@ public class MahasiswaServiceImpl implements MahasiswaService {
         }
 
         return AppPage.create(listData, pageable, listMahasiswa.getTotalElements());
+    }
+
+    @Override
+    public Page<SimpleMap> findAllProfileMahasiswaUser(SearchMahasiswaRequestRecord searchRequest) {
+        // Convert SearchMahasiswaRequestRecord to MahasiswaFilterRecord
+        MahasiswaFilterRecord filterRequest = new MahasiswaFilterRecord(
+                searchRequest.search(),
+                searchRequest.nama(),
+                searchRequest.nim(),
+                searchRequest.jurusan(),
+                searchRequest.alamat()
+        );
+
+        // Create Pageable from request parameters with defaults for null values
+        Pageable pageable = org.springframework.data.domain.PageRequest.of(
+                (searchRequest.pageNumber() != null ? searchRequest.pageNumber() : 1) - 1, // Spring Data uses 0-based page numbering
+                searchRequest.pageSize() != null ? searchRequest.pageSize() : 10,
+                org.springframework.data.domain.Sort.by(
+                        searchRequest.sortColumnDir() != null && searchRequest.sortColumnDir().equalsIgnoreCase("desc") ?
+                                org.springframework.data.domain.Sort.Direction.DESC :
+                                org.springframework.data.domain.Sort.Direction.ASC,
+                        searchRequest.sortColumn() != null ? searchRequest.sortColumn() : "modifiedDate"
+                )
+        );
+
+        // Call the original method with the built filter and pageable
+        return findAllProfileMahasiswaUser(filterRequest, pageable);
     }
 
     @Override

@@ -45,17 +45,7 @@ public class BukuServiceImpl implements BukuService {
     private final StatusBukuRepository statusBukuRepository;
 
     @Override
-    public Buku addBukuBaru(CreateBukuRequestRecord request, String token) {
-        String prefixBearerToken = token;
-        if (prefixBearerToken != null && prefixBearerToken.startsWith("Bearer ")) {
-            prefixBearerToken = prefixBearerToken.substring(7);
-        }
-
-        String username = jwtUtil.extractUsername(prefixBearerToken);
-        if (username == null || username.isBlank()) {
-            throw new BadCredentialsException("Username kosong atau tidak valid.");
-        }
-
+    public Buku addBukuBaru(CreateBukuRequestRecord request, String username) {
         Admin admin = adminRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("Pengguna Dengan " + username + " tidak ditemukan."));
 
@@ -96,17 +86,7 @@ public class BukuServiceImpl implements BukuService {
     }
 
     @Override
-    public Buku editBuku(UpdateBukuRequestRecord request, String token) {
-        String prefixBearerToken = token;
-        if (prefixBearerToken != null && prefixBearerToken.startsWith("Bearer ")) {
-            prefixBearerToken = prefixBearerToken.substring(7);
-        }
-
-        String username = jwtUtil.extractUsername(prefixBearerToken);
-        if (username == null || username.isBlank()) {
-            throw new BadCredentialsException("Username kosong atau tidak valid.");
-        }
-
+    public Buku editBuku(UpdateBukuRequestRecord request, String username) {
         Admin admin = adminRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("Pengguna dengan " + username + " tidak ditemukan."));
 
@@ -188,17 +168,6 @@ public class BukuServiceImpl implements BukuService {
 
         boolean isAscending = sortDirection.equals("ASC");
 
-        System.out.println("=== findAllBuku Debug ===");
-        System.out.println("Request sortColumn: " + request.sortColumn());
-        System.out.println("Request sortColumnDir: " + request.sortColumnDir());
-        System.out.println("Final sortColumn: " + sortColumn);
-        System.out.println("Final sortDirection: " + sortDirection);
-        System.out.println("isAscending: " + isAscending);
-        System.out.println("Request search: " + request.search());
-        System.out.println("Request judulBuku: " + request.judulBuku());
-        System.out.println("Request penulis: " + request.penulis());
-        System.out.println("Request penerbit: " + request.penerbit());
-
         // STEP 2: Create Pageable from request parameters
         int pageNumber = request.pageNumber() != null ? request.pageNumber() - 1 : 0; // Spring Data pages start from 0
         int pageSize = request.pageSize() != null ? request.pageSize() : 10;
@@ -232,10 +201,6 @@ public class BukuServiceImpl implements BukuService {
         int recordsTotal = (int) listBuku.getTotalElements();
         int recordsBeforeCurrentPage = (int) pageable.getOffset();
         boolean isDescending = !isAscending;
-
-        System.out.println("recordsTotal: " + recordsTotal);
-        System.out.println("recordsBeforeCurrentPage: " + recordsBeforeCurrentPage);
-        System.out.println("isDescending: " + isDescending);
 
         // STEP 6: Map Data with Dynamic Numbering
         List<SimpleMap> listData = new java.util.ArrayList<>();
@@ -292,8 +257,6 @@ public class BukuServiceImpl implements BukuService {
             index++;
         }
 
-        System.out.println("========================\n");
-
         return AppPage.create(listData, pageable, recordsTotal);
     }
 
@@ -333,6 +296,20 @@ public class BukuServiceImpl implements BukuService {
 
         data.put("namaKategoriBuku", buku.getNamaKategori());
         data.put("statusBuku", buku.getStatusBukuTersedia());
+        return data;
+    }
+
+    @Override
+    public SimpleMap getStatusBuku(String id) {
+        Buku buku = bukuRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Buku tidak ditemukan"));
+
+        SimpleMap data = new SimpleMap();
+        data.put("bukuId", buku.getId());
+        data.put("judulBuku", buku.getJudulBuku());
+        data.put("jumlahSalinan", buku.getJumlahSalinan());
+        data.put("statusTersedia", buku.getStatusBukuTersedia().getStatusBuku().name());
+
         return data;
     }
 

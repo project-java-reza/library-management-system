@@ -21,10 +21,8 @@ public interface AuthService {
 
     void registerAdmin(AdminRegisterRequestRecord request);
 
-    void registerUser(UserRequestRecord request);
-
     void logout(Admin userLoggedIn);
 
-    void logoutUser(User userLoggedIn);
+    void logout(User userLoggedIn);
 
 }

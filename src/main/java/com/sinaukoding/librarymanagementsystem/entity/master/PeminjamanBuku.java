@@ -54,4 +54,7 @@ public class PeminjamanBuku extends BaseEntity {
 
     @Column(name = "denda", nullable = false)
     private Long denda = 0L;
+
+    @Column(name = "tanggal_tenggat")
+    private LocalDate tanggalTenggat;
 }

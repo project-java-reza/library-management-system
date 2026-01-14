@@ -24,4 +24,7 @@ public interface UserRepository extends JpaRepository<User, String>, JpaSpecific
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.mahasiswa WHERE u.token = :token")
     Optional<User> findByTokenWithMahasiswa(String token);
 
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.mahasiswa WHERE u.username = :username")
+    Optional<User> findByUsernameWithMahasiswa(String username);
+
 }

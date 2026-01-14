@@ -1,6 +1,7 @@
 package com.sinaukoding.librarymanagementsystem.service.master.impl;
 
 import com.sinaukoding.librarymanagementsystem.builder.CustomBuilder;
+import com.sinaukoding.librarymanagementsystem.entity.managementuser.Admin;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.StatusBuku;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.User;
 import com.sinaukoding.librarymanagementsystem.entity.master.Buku;
@@ -13,8 +14,11 @@ import com.sinaukoding.librarymanagementsystem.model.enums.StatusBukuPinjaman;
 import com.sinaukoding.librarymanagementsystem.model.filter.PeminjamanBukuFilterRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.CreatePeminjamanBukuRequestRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.PeminjamanBukuRequestRecord;
+import com.sinaukoding.librarymanagementsystem.model.request.SearchPeminjamanBukuRequestRecord;
+import com.sinaukoding.librarymanagementsystem.model.request.SearchPeminjamanUserRequestRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.SearchRecentPeminjamanRequestRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.UpdatePeminjamanBukuRequestRecord;
+import com.sinaukoding.librarymanagementsystem.repository.managementuser.AdminRepository;
 import com.sinaukoding.librarymanagementsystem.repository.managementuser.StatusBukuRepository;
 import com.sinaukoding.librarymanagementsystem.repository.managementuser.UserRepository;
 import com.sinaukoding.librarymanagementsystem.repository.master.BukuRepository;
@@ -33,6 +37,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,14 +53,15 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
     private final BukuRepository bukuRepository;
     private final PeminjamanBukuMapper peminjamanBukuMapper;
     private final StatusBukuRepository statusBukuRepository;
+    private final AdminRepository adminRepository;
 
     @Override
-    public PeminjamanBuku addPeminjamanBuku(PeminjamanBukuRequestRecord request, String token) {
-        return addPeminjamanBukuInternal(request, token);
+    public PeminjamanBuku addPeminjamanBuku(PeminjamanBukuRequestRecord request, String username) {
+        return addPeminjamanBukuInternal(request, username);
     }
 
     @Override
-    public PeminjamanBuku addPeminjamanBuku(CreatePeminjamanBukuRequestRecord request, String token) {
+    public PeminjamanBuku addPeminjamanBuku(CreatePeminjamanBukuRequestRecord request, String username) {
         // Convert CreatePeminjamanBukuRequestRecord to PeminjamanBukuRequestRecord
         PeminjamanBukuRequestRecord oldRequest = new PeminjamanBukuRequestRecord(
             request.bukuId(),
@@ -63,24 +70,12 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
             request.statusBukuPinjaman(),
             request.denda() != null ? request.denda() : 0L
         );
-        return addPeminjamanBukuInternal(oldRequest, token);
+        return addPeminjamanBukuInternal(oldRequest, username);
     }
 
-    private PeminjamanBuku addPeminjamanBukuInternal(PeminjamanBukuRequestRecord request, String token) {
+    private PeminjamanBuku addPeminjamanBukuInternal(PeminjamanBukuRequestRecord request, String username) {
         try {
             log.info("Creating peminjaman buku for bukuId: {}", request.bukuId());
-
-            // Extract and validate token
-            String prefixBearerToken = token;
-            if (prefixBearerToken != null && prefixBearerToken.startsWith("Bearer ")) {
-                prefixBearerToken = prefixBearerToken.substring(7);
-            }
-
-            String username = jwtUtil.extractUsername(prefixBearerToken);
-            if (username == null || username.isBlank()) {
-                log.error("Username is null or blank");
-                throw new BadCredentialsException("Username tidak valid atau telah kadaluarsa. Silakan login kembali.");
-            }
 
             log.info("User {} attempting to borrow book", username);
 
@@ -304,11 +299,72 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
             data.put("tanggalKembali", peminjaman.getTanggalKembali());
             data.put("statusBukuPinjaman", peminjaman.getStatusBukuPinjaman());
             data.put("denda", peminjaman.getDenda());
+            data.put("tanggalTenggat", peminjaman.getTanggalTenggat());
             listData.add(data);
             index++;
         }
 
         return AppPage.create(listData, pageable, listPeminjamanBuku.getTotalElements());
+    }
+
+    @Override
+    public Page<SimpleMap> findAllPeminjamanBuku(SearchPeminjamanBukuRequestRecord searchRequest) {
+        log.info("Finding all peminjaman buku with search request: {}", searchRequest);
+
+        // Map sort column from database name to entity property name
+        String entitySortColumn = mapSortColumnForAdmin(searchRequest.sortColumn());
+
+        // Convert SearchRequestRecord to Pageable
+        Sort sort = searchRequest.sortColumn() != null && !searchRequest.sortColumn().isEmpty()
+                ? Sort.by(Sort.Direction.fromString(searchRequest.sortColumnDir() != null ? searchRequest.sortColumnDir() : "ASC"),
+                          entitySortColumn)
+                : Sort.by(Sort.Direction.DESC, "modifiedDate");
+
+        Pageable pageable = org.springframework.data.domain.PageRequest.of(
+                searchRequest.pageNumber() - 1,
+                searchRequest.pageSize(),
+                sort
+        );
+
+        // Build filter from search parameter
+        PeminjamanBukuFilterRecord filterRequest = new PeminjamanBukuFilterRecord(
+            null, null, null, null, null, null, null
+        );
+
+        if (searchRequest.status() != null && !searchRequest.status().isEmpty()) {
+            try {
+                StatusBukuPinjaman statusEnum = StatusBukuPinjaman.valueOf(searchRequest.status().toUpperCase());
+                filterRequest = new PeminjamanBukuFilterRecord(
+                    null, null, null, null, statusEnum, null, null
+                );
+            } catch (IllegalArgumentException e) {
+                // Invalid status, ignore
+                log.warn("Invalid status value: {}", searchRequest.status());
+            }
+        }
+
+        // Call the original method with the built filter and pageable
+        return findAllPeminjamanBuku(filterRequest, pageable);
+    }
+
+    /**
+     * Map sort column for admin from database column name (snake_case) to entity property name (camelCase)
+     */
+    private String mapSortColumnForAdmin(String sortColumn) {
+        if (sortColumn == null || sortColumn.isEmpty()) {
+            return "modifiedDate";
+        }
+
+        return switch (sortColumn) {
+            case "tanggal_pinjam" -> "tanggalPinjam";
+            case "tanggal_kembali" -> "tanggalKembali";
+            case "judul_buku", "judulBuku", "buku" -> "buku.judulBuku";
+            case "nama", "nama_mahasiswa", "namaMahasiswa" -> "user.mahasiswa.nama";
+            case "status_buku_pinjaman", "statusBukuPinjaman", "status" -> "statusBukuPinjaman";
+            case "modified_date", "modifiedDate" -> "modifiedDate";
+            case "created_date", "createdDate" -> "createdDate";
+            default -> "modifiedDate";
+        };
     }
 
     @Override
@@ -351,6 +407,7 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
             data.put("tanggalKembali", peminjamanBuku.getTanggalKembali());
             data.put("statusBukuPinjaman", peminjamanBuku.getStatusBukuPinjaman());
             data.put("denda", peminjamanBuku.getDenda());
+            data.put("tanggalTenggat", peminjamanBuku.getTanggalTenggat());
 
             return data;
         } catch (IllegalArgumentException | EntityNotFoundException e) {
@@ -388,12 +445,12 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
     }
 
     @Override
-    public SimpleMap updatePeminjamanBuku(String id, PeminjamanBukuRequestRecord request) {
-        return updatePeminjamanBukuInternal(id, request);
+    public SimpleMap updatePeminjamanBuku(String id, PeminjamanBukuRequestRecord request, String username) {
+        return updatePeminjamanBukuInternal(id, request, username);
     }
 
     @Override
-    public SimpleMap updatePeminjamanBuku(String id, UpdatePeminjamanBukuRequestRecord request) {
+    public SimpleMap updatePeminjamanBuku(String id, UpdatePeminjamanBukuRequestRecord request, String username) {
         // Convert UpdatePeminjamanBukuRequestRecord to PeminjamanBukuRequestRecord
         PeminjamanBukuRequestRecord oldRequest = new PeminjamanBukuRequestRecord(
             request.bukuId(),
@@ -402,17 +459,24 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
             request.statusBukuPinjaman(),
             request.denda()
         );
-        return updatePeminjamanBukuInternal(id, oldRequest);
+        return updatePeminjamanBukuInternal(id, oldRequest, username);
     }
 
-    private SimpleMap updatePeminjamanBukuInternal(String id, PeminjamanBukuRequestRecord request) {
+    private SimpleMap updatePeminjamanBukuInternal(String id, PeminjamanBukuRequestRecord request, String username) {
         try {
-            log.info("Updating peminjaman: id={}", id);
+            log.info("Updating peminjaman: id={}, username={}", id, username);
 
             if (id == null || id.isBlank()) {
                 log.error("Peminjaman ID is null or blank");
                 throw new IllegalArgumentException("ID peminjaman tidak boleh kosong");
             }
+
+            // Get admin who is performing the update
+            Admin admin = adminRepository.findByUsername(username)
+                    .orElseThrow(() -> {
+                        log.error("Admin not found: {}", username);
+                        return new EntityNotFoundException("Admin dengan username '" + username + "' tidak ditemukan.");
+                    });
 
             PeminjamanBuku peminjamanBuku = peminjamanBukuRepository.findById(id)
                     .orElseThrow(() -> {
@@ -420,29 +484,50 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
                         return new EntityNotFoundException("Data peminjaman dengan ID '" + id + "' tidak ditemukan.");
                     });
 
+            // Simpan status lama untuk validasi perubahan
+            StatusBukuPinjaman oldStatus = peminjamanBuku.getStatusBukuPinjaman();
+
+            // Set admin who is updating the peminjaman
+            peminjamanBuku.setAdmin(admin);
+            log.info("Admin {} akan mengupdate peminjaman id {}", username, id);
+
+            // Log nilai awal
+            log.info("BEFORE UPDATE - statusBukuPinjaman: {}", peminjamanBuku.getStatusBukuPinjaman());
+            log.info("REQUEST - statusBukuPinjaman: {}", request.statusBukuPinjaman());
+            log.info("REQUEST - tanggalPinjam: {}", request.tanggalPinjam());
+            log.info("REQUEST - tanggalKembali: {}", request.tanggalKembali());
+            log.info("REQUEST - denda: {}", request.denda());
+
             // Validasi untuk update: minimal satu field yang di-update tidak null
             boolean hasUpdate = false;
             if (request.tanggalPinjam() != null) {
                 peminjamanBuku.setTanggalPinjam(request.tanggalPinjam());
                 hasUpdate = true;
+                log.info("Updating tanggalPinjam to: {}", request.tanggalPinjam());
             }
             if (request.tanggalKembali() != null) {
                 peminjamanBuku.setTanggalKembali(request.tanggalKembali());
                 hasUpdate = true;
+                log.info("Updating tanggalKembali to: {}", request.tanggalKembali());
             }
             if (request.statusBukuPinjaman() != null) {
                 peminjamanBuku.setStatusBukuPinjaman(request.statusBukuPinjaman());
                 hasUpdate = true;
+                log.info("Updating statusBukuPinjaman from {} to: {}", oldStatus, request.statusBukuPinjaman());
             }
             if (request.denda() != null) {
                 peminjamanBuku.setDenda(request.denda());
                 hasUpdate = true;
+                log.info("Updating denda to: {}", request.denda());
             }
 
             if (!hasUpdate) {
                 log.warn("No fields to update for peminjaman id: {}", id);
                 throw new IllegalArgumentException("Minimal satu field harus diisi (tanggalPinjam, tanggalKembali, atau statusBukuPinjaman)");
             }
+
+            // Log nilai setelah update
+            log.info("AFTER UPDATE - statusBukuPinjaman: {}", peminjamanBuku.getStatusBukuPinjaman());
 
             // Validasi tanggal kembali must be after tanggal pinjam (jika keduanya di-update)
             if (peminjamanBuku.getTanggalPinjam() != null && peminjamanBuku.getTanggalKembali() != null) {
@@ -451,6 +536,32 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
                         peminjamanBuku.getTanggalKembali(), peminjamanBuku.getTanggalPinjam());
                     throw new IllegalArgumentException("Tanggal Kembali tidak boleh sebelum Tanggal Pinjam");
                 }
+            }
+
+            // Logika untuk tanggal tenggat
+            // 1. Jika status berubah menjadi DENDA (dari status lain), set tanggal tenggat = hari ini + 7 hari
+            if (request.statusBukuPinjaman() == StatusBukuPinjaman.DENDA &&
+                oldStatus != StatusBukuPinjaman.DENDA) {
+                LocalDate tanggalTenggat = LocalDate.now().plusDays(7);
+                peminjamanBuku.setTanggalTenggat(tanggalTenggat);
+                log.info("Status berubah menjadi DENDA, tanggal tenggat di-set ke: {}", tanggalTenggat);
+            }
+            // 2. Jika denda di-update, status DENDA, DAN status TIDAK berubah, tambahkan 7 hari ke tanggal tenggat
+            else if (request.denda() != null &&
+                     request.statusBukuPinjaman() == null && // Status tidak sedang diubah
+                     peminjamanBuku.getStatusBukuPinjaman() == StatusBukuPinjaman.DENDA &&
+                     peminjamanBuku.getTanggalTenggat() != null) {
+                LocalDate tanggalTenggatBaru = peminjamanBuku.getTanggalTenggat().plusDays(7);
+                peminjamanBuku.setTanggalTenggat(tanggalTenggatBaru);
+                log.info("Denda di-update untuk status DENDA, tanggal tenggat diperbarui: {} -> {}",
+                    peminjamanBuku.getTanggalTenggat(), tanggalTenggatBaru);
+            }
+            // 3. Jika status berubah dari DENDA ke status lain (misal SUDAH_DIKEMBALIKAN), reset tanggal tenggat
+            else if (request.statusBukuPinjaman() != null &&
+                     request.statusBukuPinjaman() != StatusBukuPinjaman.DENDA &&
+                     oldStatus == StatusBukuPinjaman.DENDA) {
+                peminjamanBuku.setTanggalTenggat(null);
+                log.info("Status berubah dari DENDA ke {}, tanggal tenggat di-reset", request.statusBukuPinjaman());
             }
 
             PeminjamanBuku updatedPeminjaman = peminjamanBukuRepository.save(peminjamanBuku);
@@ -466,6 +577,7 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
             result.put("tanggalKembali", updatedPeminjaman.getTanggalKembali());
             result.put("statusBukuPinjaman", updatedPeminjaman.getStatusBukuPinjaman());
             result.put("denda", updatedPeminjaman.getDenda());
+            result.put("tanggalTenggat", updatedPeminjaman.getTanggalTenggat());
 
             return result;
         } catch (IllegalArgumentException | EntityNotFoundException e) {
@@ -507,11 +619,6 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
         try {
             log.info("Finding peminjaman for user: {}", username);
 
-            if (username == null || username.isBlank()) {
-                log.error("Username is null or blank");
-                throw new IllegalArgumentException("Username tidak boleh kosong");
-            }
-
             User user = userRepository.findByUsername(username)
                     .orElseThrow(() -> {
                         log.error("User not found: {}", username);
@@ -535,6 +642,7 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
                 data.put("tanggalKembali", buku.getTanggalKembali());
                 data.put("statusBukuPinjaman", buku.getStatusBukuPinjaman());
                 data.put("denda", buku.getDenda());
+                data.put("tanggalTenggat", buku.getTanggalTenggat());
                 return data;
             }).toList();
 
@@ -546,6 +654,83 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
             log.error("Unexpected error in findPeminjamanByUser: {}", e.getMessage(), e);
             throw new RuntimeException("Terjadi kesalahan saat mengambil data peminjaman user. Silakan coba lagi.", e);
         }
+    }
+
+    @Override
+    public Page<SimpleMap> findPeminjamanByUser(String username, SearchPeminjamanUserRequestRecord searchRequest) {
+        try {
+            log.info("Finding peminjaman for user: {}", username);
+
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> {
+                        log.error("User not found: {}", username);
+                        return new EntityNotFoundException("User dengan username '" + username + "' tidak ditemukan.");
+                    });
+
+            // Map sort column from database name to entity property name
+            String entitySortColumn = mapSortColumn(searchRequest.sortColumn());
+
+            // Convert SearchRequestRecord to Pageable
+            Sort sort = searchRequest.sortColumn() != null && !searchRequest.sortColumn().isEmpty()
+                    ? Sort.by(Sort.Direction.fromString(searchRequest.sortColumnDir() != null ? searchRequest.sortColumnDir() : "ASC"),
+                              entitySortColumn)
+                    : Sort.by(Sort.Direction.DESC, "tanggalPinjam");
+
+            Pageable pageable = org.springframework.data.domain.PageRequest.of(
+                    searchRequest.pageNumber() - 1,
+                    searchRequest.pageSize(),
+                    sort
+            );
+
+            // Get peminjaman by user from repository
+            Page<PeminjamanBuku> userPeminjamanPage = peminjamanBukuRepository.findByUser(user, pageable);
+
+            log.info("Found {} peminjaman records for user {}", userPeminjamanPage.getTotalElements(), username);
+
+            List<SimpleMap> listData = userPeminjamanPage.stream().map(buku -> {
+                SimpleMap data = new SimpleMap();
+                data.put("id", buku.getId());
+                data.put("judulBuku", buku.getBuku().getJudulBuku());
+                data.put("penulis", buku.getBuku().getPenulis());
+                data.put("penerbit", buku.getBuku().getPenerbit());
+                data.put("namaKategori", buku.getBuku().getNamaKategori());
+                data.put("lokasiRak", buku.getBuku().getLokasiRak());
+                data.put("tanggalPinjam", buku.getTanggalPinjam());
+                data.put("tanggalKembali", buku.getTanggalKembali());
+                data.put("statusBukuPinjaman", buku.getStatusBukuPinjaman());
+                data.put("denda", buku.getDenda());
+                data.put("tanggalTenggat", buku.getTanggalTenggat());
+                return data;
+            }).toList();
+
+            return AppPage.create(listData, pageable, userPeminjamanPage.getTotalElements());
+        } catch (BadCredentialsException | EntityNotFoundException e) {
+            log.error("Error in findPeminjamanByUser: {}", e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            log.error("Unexpected error in findPeminjamanByUser: {}", e.getMessage(), e);
+            throw new RuntimeException("Terjadi kesalahan saat mengambil data peminjaman user. Silakan coba lagi.", e);
+        }
+    }
+
+    /**
+     * Map sort column from database column name (snake_case) to entity property name (camelCase)
+     */
+    private String mapSortColumn(String sortColumn) {
+        if (sortColumn == null || sortColumn.isEmpty()) {
+            return "tanggalPinjam";
+        }
+
+        return switch (sortColumn) {
+            case "tanggal_pinjam" -> "tanggalPinjam";
+            case "tanggal_kembali" -> "tanggalKembali";
+            case "judul_buku", "judulBuku", "buku" -> "buku.judulBuku";
+            case "nama", "nama_mahasiswa", "namaMahasiswa" -> "user.mahasiswa.nama";
+            case "status_buku_pinjaman", "statusBukuPinjaman", "status" -> "statusBukuPinjaman";
+            case "modified_date", "modifiedDate" -> "modifiedDate";
+            case "created_date", "createdDate" -> "createdDate";
+            default -> "tanggalPinjam";
+        };
     }
 
     @Override
@@ -756,6 +941,18 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
                 data.put("tanggalKembali", peminjaman.getTanggalKembali());
                 data.put("statusBukuPinjaman", peminjaman.getStatusBukuPinjaman());
                 data.put("denda", peminjaman.getDenda());
+                data.put("tanggalTenggat", peminjaman.getTanggalTenggat());
+
+                // Hitung total keterlambatan (dari tanggal kembali sampai tanggal tenggat)
+                Long totalKeterlambatan = null;
+                if (peminjaman.getTanggalTenggat() != null && peminjaman.getTanggalKembali() != null) {
+                    long daysBetween = ChronoUnit.DAYS.between(
+                        peminjaman.getTanggalKembali(),
+                        peminjaman.getTanggalTenggat()
+                    );
+                    totalKeterlambatan = daysBetween > 0 ? daysBetween : 0;
+                }
+                data.put("totalKeterlambatan", totalKeterlambatan);
 
                 listData.add(data);
                 index++;
@@ -787,5 +984,67 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
             case "created_date", "createdDate" -> "createdDate";
             default -> "createdDate";
         };
+    }
+
+    @Override
+    public SimpleMap cekPeminjamanTerlambat() {
+        try {
+            log.info("Cek peminjaman terlambat - memproses update tanggal tenggat untuk status DENDA");
+
+            // Cari semua peminjaman dengan status DENDA
+            List<PeminjamanBuku> peminjamanDendaList = peminjamanBukuRepository.findAll().stream()
+                    .filter(peminjaman -> peminjaman.getStatusBukuPinjaman() == StatusBukuPinjaman.DENDA)
+                    .toList();
+
+            log.info("Ditemukan {} peminjaman dengan status DENDA", peminjamanDendaList.size());
+
+            int updatedCount = 0;
+            List<SimpleMap> updatedPeminjamanList = new ArrayList<>();
+
+            for (PeminjamanBuku peminjaman : peminjamanDendaList) {
+                // Update tanggalTenggat = tanggalKembali + 7 hari
+                LocalDate tanggalTenggatBaru = peminjaman.getTanggalKembali().plusDays(7);
+                LocalDate tanggalTenggatLama = peminjaman.getTanggalTenggat();
+
+                // tanggalPinjam TIDAK diubah, tetap tanggal awal peminjaman
+                peminjaman.setTanggalTenggat(tanggalTenggatBaru);
+                peminjamanBukuRepository.save(peminjaman);
+
+                log.info("Peminjaman ID {} diupdate: tanggalTenggat {} -> {}, buku: {}, user: {}",
+                    peminjaman.getId(),
+                    tanggalTenggatLama,
+                    tanggalTenggatBaru,
+                    peminjaman.getBuku().getJudulBuku(),
+                    peminjaman.getUser().getUsername());
+
+                // Tambah ke list untuk response
+                SimpleMap peminjamanData = new SimpleMap();
+                peminjamanData.put("id", peminjaman.getId());
+                peminjamanData.put("judulBuku", peminjaman.getBuku().getJudulBuku());
+                peminjamanData.put("nama", peminjaman.getUser().getNama());
+                peminjamanData.put("username", peminjaman.getUser().getUsername());
+                peminjamanData.put("tanggalPinjam", peminjaman.getTanggalPinjam()); // Tidak berubah
+                peminjamanData.put("tanggalTenggatLama", tanggalTenggatLama);
+                peminjamanData.put("tanggalTenggatBaru", tanggalTenggatBaru);
+                peminjamanData.put("tanggalKembali", peminjaman.getTanggalKembali());
+                peminjamanData.put("denda", peminjaman.getDenda());
+                updatedPeminjamanList.add(peminjamanData);
+
+                updatedCount++;
+            }
+
+            SimpleMap result = new SimpleMap();
+            result.put("totalDenda", peminjamanDendaList.size());
+            result.put("totalUpdated", updatedCount);
+            result.put("updatedPeminjaman", updatedPeminjamanList);
+            result.put("message", String.format("Berhasil mengupdate tanggal tenggat untuk %d peminjaman dengan status DENDA", updatedCount));
+
+            log.info("Selesai cek peminjaman terlambat: {} peminjaman diupdate", updatedCount);
+
+            return result;
+        } catch (Exception e) {
+            log.error("Error dalam cekPeminjamanTerlambat: {}", e.getMessage(), e);
+            throw new RuntimeException("Terjadi kesalahan saat mengecek peminjaman terlambat. Silakan coba lagi.", e);
+        }
     }
 }

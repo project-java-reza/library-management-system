@@ -9,13 +9,15 @@ import org.springframework.data.domain.Page;
 
 
 public interface BukuService {
-    Buku addBukuBaru(CreateBukuRequestRecord request, String token);
+    Buku addBukuBaru(CreateBukuRequestRecord request, String username);
 
-    Buku editBuku(UpdateBukuRequestRecord request, String token);
+    Buku editBuku(UpdateBukuRequestRecord request, String username);
 
     Page<SimpleMap> findAllBuku(BukuSearchRequestRecord request);
 
     SimpleMap findByIdBuku(String id);
+
+    SimpleMap getStatusBuku(String id);
 
     void deleteByIdBuku(String id);
 

@@ -7,6 +7,7 @@ import com.sinaukoding.librarymanagementsystem.model.request.RegisterRequestReco
 import com.sinaukoding.librarymanagementsystem.model.response.BaseResponse;
 import com.sinaukoding.librarymanagementsystem.service.app.AuthService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -19,18 +20,18 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("login")
-    public BaseResponse<?> login(@RequestBody LoginRequestRecord request) {
+    public BaseResponse<?> login(@Valid @RequestBody LoginRequestRecord request) {
         return BaseResponse.ok("Berhasil Login", authService.login(request));
     }
 
     @PostMapping("pendaftaran")
-    public BaseResponse<?> register(@RequestBody RegisterRequestRecord request) {
+    public BaseResponse<?> register(@Valid @RequestBody RegisterRequestRecord request) {
         authService.register(request);
         return BaseResponse.ok("Berhasil Mendaftar", null);
     }
 
     @PostMapping("pendaftaran/admin")
-    public BaseResponse<?> registerAdmin(@RequestBody AdminRegisterRequestRecord request) {
+    public BaseResponse<?> registerAdmin(@Valid @RequestBody AdminRegisterRequestRecord request) {
         authService.registerAdmin(request);
         return BaseResponse.ok("Berhasil Mendaftar sebagai Admin", null);
     }
@@ -43,13 +44,11 @@ public class AuthController {
         }
 
         if (userLoggedInConfig.getAdmin() != null) {
-            var adminLoggedIn = userLoggedInConfig.getAdmin();
-            authService.logout(adminLoggedIn);
+            authService.logout(userLoggedInConfig.getAdmin());
         }
 
         if (userLoggedInConfig.getUser() != null) {
-            var userLoggedIn = userLoggedInConfig.getUser();
-            authService.logoutUser(userLoggedIn);
+            authService.logout(userLoggedInConfig.getUser());
         }
 
         return BaseResponse.ok("Berhasil logout", null);

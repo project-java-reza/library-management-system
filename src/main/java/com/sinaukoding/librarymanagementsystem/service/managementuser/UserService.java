@@ -22,9 +22,9 @@ public interface UserService {
     void deleteByIdUser(String id);
 
     // New methods for user profile
-    SimpleMap getProfileByToken(String token);
+    SimpleMap getProfileByUsername(String username);
 
-    User updateProfileByToken(UserProfileRequestRecord request, String token);
+    User updateProfileByUsername(UserProfileRequestRecord request, String username);
 
     String uploadFoto(String id, MultipartFile file);
 

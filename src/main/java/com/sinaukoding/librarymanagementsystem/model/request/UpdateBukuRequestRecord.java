@@ -1,12 +1,14 @@
 package com.sinaukoding.librarymanagementsystem.model.request;
 
 import com.sinaukoding.librarymanagementsystem.model.enums.EStatusBuku;
+import jakarta.validation.constraints.NotBlank;
 
 /**
  * Request Record untuk UPDATE Buku yang sudah ada
  * Semua field OPSIONAL - hanya field yang dikirim yang akan diupdate
  */
 public record UpdateBukuRequestRecord(
+        @NotBlank(message = "ID tidak boleh kosong untuk operasi update")
         String id,
         String judulBuku,
         String penulis,

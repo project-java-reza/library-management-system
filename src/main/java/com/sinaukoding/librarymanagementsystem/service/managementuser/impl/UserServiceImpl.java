@@ -197,9 +197,9 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public SimpleMap getProfileByToken(String token) {
-        var user = userRepository.findByTokenWithMahasiswa(token)
-                .orElseThrow(() -> new RuntimeException("User tidak ditemukan dengan token ini"));
+    public SimpleMap getProfileByUsername(String username) {
+        var user = userRepository.findByUsernameWithMahasiswa(username)
+                .orElseThrow(() -> new RuntimeException("User dengan username '" + username + "' tidak ditemukan"));
 
         SimpleMap data = new SimpleMap();
         data.put("id", user.getId());
@@ -229,9 +229,9 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User updateProfileByToken(UserProfileRequestRecord request, String token) {
-        var userExisting = userRepository.findByToken(token)
-                .orElseThrow(() -> new RuntimeException("User tidak ditemukan dengan token ini"));
+    public User updateProfileByUsername(UserProfileRequestRecord request, String username) {
+        var userExisting = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User dengan username '" + username + "' tidak ditemukan"));
 
         // Only check uniqueness if the value is provided and different
         if (request.username() != null && !request.username().isEmpty()) {

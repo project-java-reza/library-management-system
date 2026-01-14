@@ -5,14 +5,15 @@ import com.sinaukoding.librarymanagementsystem.model.app.SimpleMap;
 import com.sinaukoding.librarymanagementsystem.model.filter.MahasiswaFilterRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.CreateMahasiswaRequestRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.MahasiswaProfileRequestRecord;
+import com.sinaukoding.librarymanagementsystem.model.request.SearchMahasiswaRequestRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.UpdateMahasiswaRequestRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface MahasiswaService  {
-    Mahasiswa addProfileMahasiswaUser(MahasiswaProfileRequestRecord request, String token);
+    Mahasiswa addProfileMahasiswaUser(MahasiswaProfileRequestRecord request, String username);
 
-    Mahasiswa editProfileMahasiswaUser(MahasiswaProfileRequestRecord request, String token);
+    Mahasiswa editProfileMahasiswaUser(MahasiswaProfileRequestRecord request, String username);
 
     // Admin methods (without token)
     SimpleMap createMahasiswa(CreateMahasiswaRequestRecord request);
@@ -20,6 +21,8 @@ public interface MahasiswaService  {
     SimpleMap updateMahasiswa(String id, UpdateMahasiswaRequestRecord request);
 
     Page<SimpleMap> findAllProfileMahasiswaUser(MahasiswaFilterRecord filterRequest, Pageable pageable);
+
+    Page<SimpleMap> findAllProfileMahasiswaUser(SearchMahasiswaRequestRecord searchRequest);
 
     SimpleMap findByIdMahasiswa(String id);
 

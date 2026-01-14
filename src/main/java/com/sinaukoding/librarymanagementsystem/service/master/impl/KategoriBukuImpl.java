@@ -8,6 +8,7 @@ import com.sinaukoding.librarymanagementsystem.model.app.AppPage;
 import com.sinaukoding.librarymanagementsystem.model.app.SimpleMap;
 import com.sinaukoding.librarymanagementsystem.model.filter.KategoriBukuFilterRecord;
 import com.sinaukoding.librarymanagementsystem.model.request.KategoriBukuRequestRecord;
+import com.sinaukoding.librarymanagementsystem.model.request.SearchKategoriBukuRequestRecord;
 import com.sinaukoding.librarymanagementsystem.repository.managementuser.AdminRepository;
 import com.sinaukoding.librarymanagementsystem.repository.master.BukuRepository;
 import com.sinaukoding.librarymanagementsystem.repository.master.KategoriBukuRepository;
@@ -18,6 +19,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
@@ -35,17 +37,7 @@ public class KategoriBukuImpl implements KategoriBukuService {
     private final BukuRepository bukuRepository;
 
     @Override
-    public KategoriBuku addKategoriBuku(KategoriBukuRequestRecord request, String token) {
-        String prefixBearerToken = token;
-        if (prefixBearerToken != null && prefixBearerToken.startsWith("Bearer ")) {
-            prefixBearerToken = prefixBearerToken.substring(7);
-        }
-
-        String username = jwtUtil.extractUsername(prefixBearerToken);
-        if (username == null || username.isBlank()) {
-            throw new BadCredentialsException("Username kosong atau tidak valid.");
-        }
-
+    public KategoriBuku addKategoriBuku(KategoriBukuRequestRecord request, String username) {
         Admin admin = adminRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("Pengguna dengan " + username + " tidak ditemukan."));
 
@@ -59,28 +51,13 @@ public class KategoriBukuImpl implements KategoriBukuService {
     }
 
     @Override
-    public KategoriBuku editKategoriBuku(KategoriBukuRequestRecord request, String token) {
-        // Validasi ID tidak boleh null untuk edit
-        if (request.id() == null || request.id().isEmpty()) {
-            throw new RuntimeException("ID tidak boleh kosong untuk operasi edit");
-        }
-
-        String prefixBearerToken = token;
-        if (prefixBearerToken != null && prefixBearerToken.startsWith("Bearer ")) {
-            prefixBearerToken = prefixBearerToken.substring(7);
-        }
-
-        String username = jwtUtil.extractUsername(prefixBearerToken);
-        if (username == null || username.isBlank()) {
-            throw new BadCredentialsException("Username kosong atau tidak valid.");
-        }
-
+    public KategoriBuku editKategoriBuku(KategoriBukuRequestRecord request, String username) {
         Admin admin = adminRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("Pengguna dengan " + username + " tidak ditemukan."));
 
         // Cek kategori buku by ID
         KategoriBuku kategoriBuku = kategoriBukuRepository.findById(request.id())
-                .orElseThrow(() -> new RuntimeException("Data Kategori Buku tidak ditemukan"));
+                .orElseThrow(() -> new EntityNotFoundException("Data Kategori Buku tidak ditemukan"));
 
         // Cek nama kategori buku unik (kecuali untuk record yang sama)
         if(kategoriBukuRepository.existsByNamaKategoriBukuAndIdNot(request.nama(), request.id())) {
@@ -95,7 +72,28 @@ public class KategoriBukuImpl implements KategoriBukuService {
     }
 
     @Override
-    public Page<SimpleMap> findAllKategoriBuku(KategoriBukuFilterRecord filterRequest, Pageable pageable) {
+    public Page<SimpleMap> findAllKategoriBuku(SearchKategoriBukuRequestRecord searchRequest) {
+        // Map sort column from request to entity property name
+        String entitySortColumn = mapSortColumn(searchRequest.sortColumn());
+
+        // Convert SearchRequestRecord to Pageable
+        Sort sort = searchRequest.sortColumn() != null && !searchRequest.sortColumn().isEmpty()
+                ? Sort.by(Sort.Direction.fromString(searchRequest.sortColumnDir() != null ? searchRequest.sortColumnDir() : "ASC"),
+                          entitySortColumn)
+                : Sort.by(Sort.Direction.DESC, "modifiedDate");
+
+        Pageable pageable = org.springframework.data.domain.PageRequest.of(
+                searchRequest.pageNumber() - 1,
+                searchRequest.pageSize(),
+                sort
+        );
+
+        // Build filter from search parameter
+        KategoriBukuFilterRecord filterRequest = new KategoriBukuFilterRecord(
+                searchRequest.search(),  // Use search parameter for filtering by nama kategori
+                null                    // deskripsiKategori not used in search
+        );
+
         CustomBuilder<KategoriBuku> builder = new CustomBuilder<>();
 
         FilterUtil.builderConditionNotBlankLike("namaKategoriBuku", filterRequest.namaKategoriBuku(), builder);
@@ -110,6 +108,19 @@ public class KategoriBukuImpl implements KategoriBukuService {
             return data;
         }).toList();
         return AppPage.create(listData, pageable, listKategoriBuku.getTotalElements());
+    }
+
+    private String mapSortColumn(String sortColumn) {
+        if (sortColumn == null || sortColumn.isEmpty()) {
+            return "modifiedDate";
+        }
+        // Map frontend column names to entity property names
+        return switch (sortColumn) {
+            case "nama" -> "nama";
+            case "modifiedDate" -> "modifiedDate";
+            case "createdDate" -> "createdDate";
+            default -> "modifiedDate";
+        };
     }
 
     @Override
