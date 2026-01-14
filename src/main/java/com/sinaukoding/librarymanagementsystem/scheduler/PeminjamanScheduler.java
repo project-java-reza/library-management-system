@@ -4,7 +4,6 @@ import com.sinaukoding.librarymanagementsystem.entity.master.PeminjamanBuku;
 import com.sinaukoding.librarymanagementsystem.model.enums.StatusBukuPinjaman;
 import com.sinaukoding.librarymanagementsystem.repository.master.PeminjamanBukuRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,72 +13,67 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class PeminjamanScheduler {
 
     private final PeminjamanBukuRepository peminjamanBukuRepository;
 
     /**
      * Scheduled task yang berjalan setiap jam 00:00 setiap hari
-     * untuk mengecek peminjaman yang melewati batas tanggal kembali
-     * dan mengubah statusnya menjadi DENDA
+     * untuk mengecek peminjaman yang tanggal kembalinya melewati 7 hari
+     * dari tanggal pinjam dan mengubah statusnya menjadi DENDA
+     *
+     * Logika: Status berubah menjadi DENDA jika tanggalKembali > tanggalPinjam + 7 hari
+     * Contoh: Jika tanggalPinjam = 14/1/2026 dan tanggalKembali = 23/1/2026,
+     *         maka status akan berubah menjadi DENDA karena 23/1 > 21/1 (14+7)
      */
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
     public void checkOverduePeminjaman() {
-        log.info("=== Starting scheduled check for overdue peminjaman ===");
-
         try {
             LocalDate today = LocalDate.now();
 
-            // Cari semua peminjaman dengan status DIPINJAM yang sudah melewati tanggal kembali
+            // Cari semua peminjaman dengan status DIPINJAM yang tanggalKembalinya
+            // sudah melewati lebih dari 7 hari dari tanggalPinjam
             List<PeminjamanBuku> overduePeminjaman = peminjamanBukuRepository.findAll().stream()
-                    .filter(peminjaman ->
-                            peminjaman.getStatusBukuPinjaman() == StatusBukuPinjaman.DIPINJAM &&
-                            peminjaman.getTanggalKembali().isBefore(today)
-                    )
+                    .filter(peminjaman -> {
+                        // Hitung batas maksimal: tanggalPinjam + 7 hari
+                        LocalDate batasMaksimal = peminjaman.getTanggalPinjam().plusDays(7);
+
+                        // Status berubah menjadi DENDA jika:
+                        // 1. Status masih DIPINJAM
+                        // 2. tanggalKembali > tanggalPinjam + 7 hari
+                        //    (artinya durasi peminjaman melebihi 7 hari)
+                        return peminjaman.getStatusBukuPinjaman() == StatusBukuPinjaman.DIPINJAM &&
+                               peminjaman.getTanggalKembali().isAfter(batasMaksimal);
+                    })
                     .toList();
 
-            if (overduePeminjaman.isEmpty()) {
-                log.info("No overdue peminjaman found");
-            } else {
-                log.info("Found {} overdue peminjaman, updating status to DENDA", overduePeminjaman.size());
-
+            if (!overduePeminjaman.isEmpty()) {
                 int updatedCount = 0;
                 for (PeminjamanBuku peminjaman : overduePeminjaman) {
                     try {
-                        log.info("Updating peminjaman ID {} - Book: {}, User: {}, Due Date: {}",
-                                peminjaman.getId(),
-                                peminjaman.getBuku().getJudulBuku(),
-                                peminjaman.getUser().getUsername(),
-                                peminjaman.getTanggalKembali());
-
                         peminjaman.setStatusBukuPinjaman(StatusBukuPinjaman.DENDA);
                         peminjamanBukuRepository.save(peminjaman);
                         updatedCount++;
-
                     } catch (Exception e) {
-                        log.error("Failed to update peminjaman ID {}: {}", peminjaman.getId(), e.getMessage());
+                        // Silently ignore individual errors
                     }
                 }
-
-                log.info("Successfully updated {} peminjaman to DENDA status", updatedCount);
             }
 
-            log.info("=== Scheduled check for overdue peminjaman completed ===");
-
         } catch (Exception e) {
-            log.error("Error in scheduled check for overdue peminjaman: {}", e.getMessage(), e);
+            // Silently ignore global errors
         }
     }
 
     /**
      * Manual trigger method untuk testing atau menjalankan on-demand
-     * Bisa dipanggil melalui endpoint jika diperlukan
+     * Bisa dipanggil melalui endpoint: POST /api/admin/peminjaman/memeriksa-tenggat-pengembalian
+     *
+     * Logika: Status berubah menjadi DENDA jika tanggalKembali > tanggalPinjam + 7 hari
      */
     @Transactional
     public void checkOverduePeminjamanManual() {
-        log.info("=== MANUAL TRIGGER: Checking for overdue peminjaman ===");
         checkOverduePeminjaman();
     }
 }

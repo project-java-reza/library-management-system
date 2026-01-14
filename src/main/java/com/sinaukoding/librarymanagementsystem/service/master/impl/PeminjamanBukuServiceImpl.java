@@ -300,6 +300,17 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
             data.put("statusBukuPinjaman", peminjaman.getStatusBukuPinjaman());
             data.put("denda", peminjaman.getDenda());
             data.put("tanggalTenggat", peminjaman.getTanggalTenggat());
+
+            // Hitung total keterlambatan
+            // Batas maksimal = tanggalPinjam + 7 hari
+            // Total keterlambatan = tanggalKembali - (tanggalPinjam + 7 hari)
+            LocalDate batasMaksimal = peminjaman.getTanggalPinjam().plusDays(7);
+            long totalKeterlambatan = 0;
+            if (peminjaman.getTanggalKembali().isAfter(batasMaksimal)) {
+                totalKeterlambatan = java.time.temporal.ChronoUnit.DAYS.between(batasMaksimal, peminjaman.getTanggalKembali());
+            }
+            data.put("totalKeterlambatan", totalKeterlambatan);
+
             listData.add(data);
             index++;
         }
@@ -408,6 +419,16 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
             data.put("statusBukuPinjaman", peminjamanBuku.getStatusBukuPinjaman());
             data.put("denda", peminjamanBuku.getDenda());
             data.put("tanggalTenggat", peminjamanBuku.getTanggalTenggat());
+
+            // Hitung total keterlambatan
+            // Batas maksimal = tanggalPinjam + 7 hari
+            // Total keterlambatan = tanggalKembali - (tanggalPinjam + 7 hari)
+            LocalDate batasMaksimal = peminjamanBuku.getTanggalPinjam().plusDays(7);
+            long totalKeterlambatan = 0;
+            if (peminjamanBuku.getTanggalKembali().isAfter(batasMaksimal)) {
+                totalKeterlambatan = java.time.temporal.ChronoUnit.DAYS.between(batasMaksimal, peminjamanBuku.getTanggalKembali());
+            }
+            data.put("totalKeterlambatan", totalKeterlambatan);
 
             return data;
         } catch (IllegalArgumentException | EntityNotFoundException e) {
@@ -643,6 +664,15 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
                 data.put("statusBukuPinjaman", buku.getStatusBukuPinjaman());
                 data.put("denda", buku.getDenda());
                 data.put("tanggalTenggat", buku.getTanggalTenggat());
+
+                // Hitung total keterlambatan
+                LocalDate batasMaksimal = buku.getTanggalPinjam().plusDays(7);
+                long totalKeterlambatan = 0;
+                if (buku.getTanggalKembali().isAfter(batasMaksimal)) {
+                    totalKeterlambatan = java.time.temporal.ChronoUnit.DAYS.between(batasMaksimal, buku.getTanggalKembali());
+                }
+                data.put("totalKeterlambatan", totalKeterlambatan);
+
                 return data;
             }).toList();
 
@@ -700,6 +730,15 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
                 data.put("statusBukuPinjaman", buku.getStatusBukuPinjaman());
                 data.put("denda", buku.getDenda());
                 data.put("tanggalTenggat", buku.getTanggalTenggat());
+
+                // Hitung total keterlambatan
+                LocalDate batasMaksimal = buku.getTanggalPinjam().plusDays(7);
+                long totalKeterlambatan = 0;
+                if (buku.getTanggalKembali().isAfter(batasMaksimal)) {
+                    totalKeterlambatan = java.time.temporal.ChronoUnit.DAYS.between(batasMaksimal, buku.getTanggalKembali());
+                }
+                data.put("totalKeterlambatan", totalKeterlambatan);
+
                 return data;
             }).toList();
 
