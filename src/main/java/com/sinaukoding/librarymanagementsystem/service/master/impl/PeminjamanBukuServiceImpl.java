@@ -1,6 +1,5 @@
 package com.sinaukoding.librarymanagementsystem.service.master.impl;
 
-import com.sinaukoding.librarymanagementsystem.builder.CustomBuilder;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.Admin;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.StatusBuku;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.User;

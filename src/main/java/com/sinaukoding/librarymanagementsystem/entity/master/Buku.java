@@ -18,7 +18,7 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "m_buku", indexes = {
         @Index(name = "idx_buku_created_date", columnList = "createdDate"),
         @Index(name = "idx_buku_modified_date", columnList = "modifiedDate"),
-        @Index(name = "idx_buku_judul_buku", columnList = "judulBuku"),
+        @Index(name = "idx_buku_judul_buku", columnList = "judul_buku"),
         @Index(name = "idx_buku_penulis", columnList = "penulis"),
         @Index(name = "idx_buku_penerbit", columnList = "penerbit"),
         @Index(name = "idx_buku_tahun_terbit", columnList = "tahunTerbit"),
