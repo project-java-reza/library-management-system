@@ -2,7 +2,6 @@ package com.sinaukoding.librarymanagementsystem.entity.master;
 
 import com.sinaukoding.librarymanagementsystem.entity.app.BaseEntity;
 import com.sinaukoding.librarymanagementsystem.entity.managementuser.Admin;
-import com.sinaukoding.librarymanagementsystem.model.enums.KategoriBukuEnum;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

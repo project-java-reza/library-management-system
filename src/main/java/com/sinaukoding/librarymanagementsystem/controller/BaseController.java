@@ -5,7 +5,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * Base Controller dengan helper methods untuk mendapatkan current user
- * Mengikuti best practices Spring Security dan Clean Code
  */
 public abstract class BaseController {
 
