@@ -22,6 +22,7 @@ public record BukuSearchRequestRecord(
         String judulBuku,      // Search by judul only
         String penulis,        // Search by penulis only
         String penerbit,       // Search by penerbit only
-        String isbn            // Search by isbn only
+        String isbn,           // Search by isbn only
+        String kategoriId      // Filter by kategori buku id
 ) {
 }

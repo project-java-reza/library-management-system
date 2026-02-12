@@ -194,6 +194,9 @@ public class BukuServiceImpl implements BukuService {
             FilterUtil.builderConditionNotBlankLike("penerbit", request.penerbit(), builder);
         }
 
+        // Filter by kategori buku
+        FilterUtil.builderConditionNotBlankJoinEqual("kategoriBukuId.id", request.kategoriId(), builder);
+
         // STEP 4: Execute Query
         Page<Buku> listBuku = bukuRepository.findAll(builder.build(), pageable);
 

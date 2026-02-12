@@ -13,7 +13,7 @@ import java.util.List;
 @Configuration
 public class CorsConfig {
 
-    @Value("${app.cors.allowed-origins:http://localhost:3000,http://localhost:5173}")
+    @Value("${app.cors.allowed-origins:http://localhost:3000,http://localhost:5173, http://localhost:4200}")
     private List<String> allowedOrigins;
 
     @Bean
@@ -22,6 +22,12 @@ public class CorsConfig {
 
         // Allow specific origins from configuration
         configuration.setAllowedOrigins(allowedOrigins);
+        configuration.addAllowedOriginPattern("*"); // HTML5 fetch compatibility
+
+        configuration.addAllowedOriginPattern("*"); // HTML5 fetch compatibility
+        configuration.addAllowedHeader("*"); // HTML5 fetch compatibility
+        configuration.addAllowedMethod("*"); // HTML5 fetch compatibility
+        configuration.setAllowCredentials(false); // HTML5 fetch compatibility
 
         // Allow HTTP methods
         configuration.setAllowedMethods(Arrays.asList(

@@ -22,13 +22,6 @@ public class UserController extends BaseController {
         this.userService = userService;
     }
 
-//    @PostMapping("save")
-//    @PreAuthorize("hasRole('ANGGOTA')")
-//    public BaseResponse<?> save(@Valid @RequestBody UserRequestRecord request) {
-//        userService.add(request);
-//        return BaseResponse.ok("Data User berhasil disimpan", null);
-//    }
-
     @PostMapping("edit")
     @PreAuthorize("hasRole('ANGGOTA')")
     public BaseResponse<?> edit(@Valid @RequestBody UserRequestRecord request) {

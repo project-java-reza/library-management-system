@@ -34,7 +34,7 @@ public class KategoriBukuController extends BaseController {
     }
 
     @PostMapping("find-all")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ANGGOTA')")
     public BaseResponse<?> findAll(@RequestBody SearchKategoriBukuRequestRecord searchRequest) {
         return BaseResponse.ok(null, kategoriBukuService.findAllKategoriBuku(searchRequest));
     }

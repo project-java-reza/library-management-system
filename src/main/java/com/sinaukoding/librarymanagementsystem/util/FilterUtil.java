@@ -34,6 +34,16 @@ public class FilterUtil {
         }
     }
 
+    /**
+     * Filter by joined entity ID field
+     * Example: filter by kategoriBukuId.id
+     */
+    public static void builderConditionNotBlankJoinEqual(String field, String value, CustomBuilder<?> builder) {
+        if (StringUtils.isNotBlank(value)) {
+            builder.with(SearchCriteria.of(field, CustomSpecification.OPERATION_JOIN_EQUAL, value));
+        }
+    }
+
     public static void builderConditionNotBlankInJoin(String field, Set<String> listValue, CustomBuilder<?> builder) {
         if (listValue != null && !listValue.isEmpty()) {
             builder.with(SearchCriteria.of(field, CustomSpecification.OPERATION_JOIN_IN, listValue));

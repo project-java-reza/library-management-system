@@ -337,21 +337,23 @@ public class PeminjamanBukuServiceImpl implements PeminjamanBukuService {
         );
 
         // Build filter from search parameter
-        PeminjamanBukuFilterRecord filterRequest = new PeminjamanBukuFilterRecord(
-            null, null, null, null, null, null, null
-        );
+        String judulBukuFilter = (searchRequest.search() != null && !searchRequest.search().isEmpty())
+                ? searchRequest.search()
+                : null;
 
+        StatusBukuPinjaman statusEnum = null;
         if (searchRequest.status() != null && !searchRequest.status().isEmpty()) {
             try {
-                StatusBukuPinjaman statusEnum = StatusBukuPinjaman.valueOf(searchRequest.status().toUpperCase());
-                filterRequest = new PeminjamanBukuFilterRecord(
-                    null, null, null, null, statusEnum, null, null
-                );
+                statusEnum = StatusBukuPinjaman.valueOf(searchRequest.status().toUpperCase());
             } catch (IllegalArgumentException e) {
                 // Invalid status, ignore
                 log.warn("Invalid status value: {}", searchRequest.status());
             }
         }
+
+        PeminjamanBukuFilterRecord filterRequest = new PeminjamanBukuFilterRecord(
+            null, null, null, null, statusEnum, null, judulBukuFilter
+        );
 
         // Call the original method with the built filter and pageable
         return findAllPeminjamanBuku(filterRequest, pageable);

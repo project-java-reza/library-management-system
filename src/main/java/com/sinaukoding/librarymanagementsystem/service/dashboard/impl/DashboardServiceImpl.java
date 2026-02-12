@@ -51,15 +51,17 @@ public class DashboardServiceImpl implements DashboardService {
         long totalPeminjaman = peminjamanBukuRepository.count();
         stats.put("totalPeminjaman", totalPeminjaman);
 
-        // Total buku yang sedang dipinjam
+        // Total buku yang sedang dipinjam (termasuk yang menunggu persetujuan admin)
         long bukuDipinjam = peminjamanBukuRepository.findAll().stream()
-                .filter(p -> p.getStatusBukuPinjaman() == StatusBukuPinjaman.DIPINJAM)
+                .filter(p -> p.getStatusBukuPinjaman() == StatusBukuPinjaman.DIPINJAM
+                        || p.getStatusBukuPinjaman() == StatusBukuPinjaman.PENDING)
                 .count();
         stats.put("bukuDipinjam", bukuDipinjam);
 
-        // Total peminjaman aktif
+        // Total peminjaman aktif (termasuk yang menunggu persetujuan admin)
         long totalPeminjamanAktif = peminjamanBukuRepository.findAll().stream()
-                .filter(p -> p.getStatusBukuPinjaman() == StatusBukuPinjaman.DIPINJAM)
+                .filter(p -> p.getStatusBukuPinjaman() == StatusBukuPinjaman.DIPINJAM
+                        || p.getStatusBukuPinjaman() == StatusBukuPinjaman.PENDING)
                 .count();
         stats.put("totalPeminjamanAktif", totalPeminjamanAktif);
 
@@ -69,9 +71,10 @@ public class DashboardServiceImpl implements DashboardService {
                 .count();
         stats.put("totalPeminjamanSelesai", totalPeminjamanSelesai);
 
-        // Buku yang terlambat dikembalikan
+        // Buku yang terlambat dikembalikan (termasuk yang menunggu persetujuan admin)
         long totalTerlambat = peminjamanBukuRepository.findAll().stream()
-                .filter(p -> p.getStatusBukuPinjaman() == StatusBukuPinjaman.DIPINJAM)
+                .filter(p -> p.getStatusBukuPinjaman() == StatusBukuPinjaman.DIPINJAM
+                        || p.getStatusBukuPinjaman() == StatusBukuPinjaman.PENDING)
                 .filter(p -> p.getTanggalKembali().isBefore(LocalDate.now()))
                 .count();
         stats.put("totalTerlambat", totalTerlambat);
